@@ -7,7 +7,7 @@ let mapleader = ','
 let g:mapleader = ','
 
 " 设置语法高亮
-syntax on
+" syntax on
 
 " 检测文件类型
 filetype on
@@ -134,7 +134,7 @@ nnoremap <C-n> :call NumberToggle()<cr>
 "==========================================
 
 " 设置新文件的编码为 UTF-8
-set encoding=utf-8
+set encoding=UTF-8
 " 自动判断编码时，依次尝试以下编码：
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 set helplang=cn
@@ -187,8 +187,17 @@ Plug 'fatih/vim-go'
 Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
 Plug 'safv12/andromeda.vim'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 call plug#end()
+
+" 预览markdown快捷键
+nmap <C-s> <Plug>MarkdownPreview
+
+nmap <C-p> <Plug>CtrlP
 
 " airblade/vim-gitgutter
 let g:gitgutter_max_signs=10000
@@ -232,6 +241,7 @@ let g:airline_right_sep = '◀'
 let g:airline_right_alt_sep = '❮'
 let g:airline_symbols.linenr = '¶'
 let g:airline_symbols.branch = '⎇'
+let g:airline_powerline_fonts = 1
 
 let g:rbpt_colorpairs = [
     \ ['brown',       'RoyalBlue3'],
@@ -278,6 +288,11 @@ map <Leader>n <plug>NERDTreeTabsToggle<CR>
 " thank to @ListenerRi, see https://github.com/wklken/k-vim/issues/165
 let g:nerdtree_tabs_open_on_console_startup=0
 let g:nerdtree_tabs_open_on_gui_startup=0
+
+" 设置devicons
+let g:webdevicons_enable_nerdtree = 1
+let g:webdevicons_conceal_nerdtree_brackets = 1
+" set guifont=DroidSansMono\ Nerd\ Font:h11
 
 " python-syntax
 let python_highlight_all = 1
