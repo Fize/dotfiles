@@ -7,7 +7,7 @@ let mapleader = ','
 let g:mapleader = ','
 
 " 设置语法高亮
-" syntax on
+syntax on
 
 " 检测文件类型
 filetype on

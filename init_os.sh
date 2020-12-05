@@ -64,7 +64,7 @@ private::zsh::install() {
 public::common::main() {
 	public::common::check_system
 	public::common::install_package
-	public::zsh::install
+	private::zsh::install
 }
 
-main "$@"
+public::common::main "$@"

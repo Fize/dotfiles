@@ -28,4 +28,4 @@ public::common::main() {
 	private::zsh::config
 }
 
-main "$@"
+public::common::main "$@"
