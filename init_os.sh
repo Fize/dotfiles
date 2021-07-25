@@ -2,7 +2,7 @@
 # Author: malzahar
 # email: malzaharguo@gmail.com
 
-export support_linux_release=("Ubuntu" "Debian" "Deepin" "Manjaro" "Fedora")
+export support_linux_release=("Ubuntu" "Debian" "Deepin" "Fedora")
 
 public::common::check_system() {
 	local system=$(uname)
@@ -44,8 +44,6 @@ public::common::check_system() {
 public::common::install_package() {
 	if [[ ${OS} == "Darwin" ]];then
 		brew install zsh curl mosh
-	elif [[ ${OS} == "Manjaro" ]];then
-		sudo pacman -Sy zsh curl wget mosh tmux
 	elif [[ ${OS} == "Fedora" ]];then
 		sudo dnf update -y
 		sudo dnf install -y vim zsh mosh tmux golang util-linux-user cmake make gcc-c++ python3-devel

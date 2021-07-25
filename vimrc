@@ -158,10 +158,12 @@ set formatoptions+=B
 call plug#begin('~/.vim/plugged')
 
 Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
 Plug 'lifepillar/vim-solarized8'
 Plug 'majutsushi/tagbar'
-Plug 'airblade/vim-gitgutter'
-Plug 'majutsushi/tagbar'
+Plug 'lfv89/vim-interestingwords'
+Plug 'Yggdroot/indentLine'
+Plug 'rking/ag.vim'
 Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
 Plug 'docunext/closetag.vim'
@@ -208,7 +210,8 @@ let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 
 " majutsushi/tagbar
-nmap <F8> :TagbarToggle<CR>
+" nmap <F8> :TagbarToggle<CR>
+map <leader>t :TagbarToggle<CR>
 
 " Raimondi/delimitMate 引号自动补全
 au FileType python let b:delimitMate_nesting_quotes = ['"']
