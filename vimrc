@@ -69,7 +69,7 @@ set ignorecase
 set smartcase
 
 " 代码折叠
-set foldenable
+" set foldenable
 " 折叠方法
 " manual    手工折叠
 " indent    使用缩进表示折叠
@@ -157,6 +157,7 @@ set formatoptions+=B
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'lifepillar/vim-solarized8'
@@ -176,8 +177,6 @@ Plug 'easymotion/vim-easymotion'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'kien/rainbow_parentheses.vim'
-Plug 'preservim/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
 Plug 'hdima/python-syntax'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'vim-syntastic/syntastic'
@@ -188,10 +187,22 @@ Plug 'fatih/vim-go'
 Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
 Plug 'ctrlpvim/ctrlp.vim'
+
+" 终端
+Plug 'voldikss/vim-floaterm'
+
+" 侧边栏
+Plug 'preservim/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" 代码折叠
+Plug 'pseewald/vim-anyfold'
+" 搜索
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 
 call plug#end()
 
@@ -202,6 +213,16 @@ nmap <C-p> <Plug>CtrlP
 
 " airblade/vim-gitgutter
 let g:gitgutter_max_signs=10000
+
+" 终端
+nnoremap   <silent>   <F7>    :FloatermNew<CR>
+tnoremap   <silent>   <F7>    <C-\><C-n>:FloatermNew<CR>
+nnoremap   <silent>   <F8>    :FloatermPrev<CR>
+tnoremap   <silent>   <F8>    <C-\><C-n>:FloatermPrev<CR>
+nnoremap   <silent>   <F9>    :FloatermNext<CR>
+tnoremap   <silent>   <F9>    <C-\><C-n>:FloatermNext<CR>
+nnoremap   <silent>   <F12>   :FloatermToggle<CR>
+tnoremap   <silent>   <F12>   <C-\><C-n>:FloatermToggle<CR>
 
 " fatih/vim-go
 let g:go_version_warning = 0
@@ -342,6 +363,7 @@ let g:coc_global_extensions = [
 	\ 'coc-vimlsp',
 	\ 'coc-yaml']
 
+
 " TextEdit might fail if hidden is not set.
 set hidden
 
@@ -425,8 +447,8 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+xmap <leader>=  <Plug>(coc-format-selected)
+nmap <leader>=  <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
@@ -812,9 +834,9 @@ endif
 " theme主题
 set background=dark
 set t_Co=256
-colorscheme solarized8
+" colorscheme solarized8
 " colorscheme molokai
-" colorscheme gruvbox
+colorscheme gruvbox
 
 
 " 设置标记一列的背景颜色和数字一行颜色一致
