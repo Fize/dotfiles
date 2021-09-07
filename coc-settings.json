@@ -19,16 +19,11 @@
     "kubernetes": "/*.yaml"
   },
   "languageserver": {
-    "golang": {
+    "go": {
       "command": "gopls",
       "rootPatterns": ["go.mod"],
       "trace.server": "verbose",
-      "filetypes": ["go"],
-      "initializationOptions": {
-        "gocodeCompletionEnabled": true,
-        "diagnosticsEnabled": true,
-        "lintTool": "golint"
-      }
+      "filetypes": ["go"]
     },
     "bash": {
       "command": "bash-language-server",

@@ -160,48 +160,50 @@ call plug#begin('~/.vim/plugged')
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
-Plug 'lifepillar/vim-solarized8'
 Plug 'majutsushi/tagbar'
 Plug 'lfv89/vim-interestingwords'
 Plug 'Yggdroot/indentLine'
-Plug 'rking/ag.vim'
-Plug 'plasticboy/vim-markdown'
 Plug 'Raimondi/delimitMate'
 Plug 'docunext/closetag.vim'
-Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'junegunn/vim-easy-align'
 Plug 'easymotion/vim-easymotion'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'kien/rainbow_parentheses.vim'
+" 语法高亮
 Plug 'hdima/python-syntax'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'vim-syntastic/syntastic'
 Plug 'elzr/vim-json'
-Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-commentary'
-Plug 'fatih/vim-go'
+" 主题
+Plug 'lifepillar/vim-solarized8'
 Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
-Plug 'ctrlpvim/ctrlp.vim'
-
+Plug 'sainnhe/gruvbox-material'
+" 底栏
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'kien/rainbow_parentheses.vim'
 " 终端
 Plug 'voldikss/vim-floaterm'
-
 " 侧边栏
+Plug 'preservim/nerdcommenter'
 Plug 'preservim/nerdtree'
 Plug 'jistr/vim-nerdtree-tabs'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-
+" markdown
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'plasticboy/vim-markdown'
+" 代码补全
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'fatih/vim-go'
 " 代码折叠
 Plug 'pseewald/vim-anyfold'
 " 搜索
+Plug 'rking/ag.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 
 call plug#end()
@@ -301,6 +303,15 @@ let g:NERDTreeMapOpenSplit = 's'
 let g:NERDTreeMapOpenVSplit = 'v'
 " fix Nerdtree ^G before folder and file names OSX terminal vim
 let g:NERDTreeNodeDelimiter = "\u00a0"
+
+" nerdtree devicons 刷新不显示
+let g:NERDTreeChDirMode = 3
+function NERDRefresh ()
+  if &filetype == "nerdtree"
+      NERDTreeRefreshRoot
+  endif
+endfunction
+call NERDRefresh()
 
 " nerdtreetabs
 map <Leader>n <plug>NERDTreeTabsToggle<CR>
@@ -833,10 +844,12 @@ endif
 
 " theme主题
 set background=dark
+" set background=light
 set t_Co=256
-" colorscheme solarized8
+colorscheme solarized8
 " colorscheme molokai
-colorscheme gruvbox
+" colorscheme gruvbox
+" colorscheme gruvbox-material
 
 
 " 设置标记一列的背景颜色和数字一行颜色一致
