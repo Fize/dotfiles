@@ -73,15 +73,11 @@ private::zsh::config() {
 private::nvim::install() {
     curl -sL install-node.now.sh/lts | bash
 
-    if [[ -f ~/.vimrc ]];then
-        mv ~/.vimrc ~/.vimrc.bak
-    fi
-
     if [[ -d ~/.vim ]];then
         mv ~/.vim ~/.vim-bak
     fi
 
-    ln -s ${WORKDIR}/vimrc ~/.vimrc
+    ln -s ${WORKDIR} ~/.config/nvim
     ln -s ${WORKDIR} ~/.vim
 
     vim +PlugInstall! +PlugClean!
