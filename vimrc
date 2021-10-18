@@ -181,6 +181,8 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'tomasr/molokai'
 Plug 'morhetz/gruvbox'
 Plug 'sainnhe/gruvbox-material'
+Plug 'rakr/vim-one'
+Plug 'joshdick/onedark.vim'
 " 底栏
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -350,7 +352,7 @@ autocmd FileType html,css EmmetInstall
 
 let g:coc_global_extensions = [
 	\ 'coc-css',
-	\ 'coc-git',
+    \ 'coc-git',
     \ 'coc-lists',
     \ 'coc-markdownlint',
     \ 'coc-prettier',
@@ -365,7 +367,7 @@ let g:coc_global_extensions = [
 	\ 'coc-html',
 	\ 'coc-import-cost',
 	\ 'coc-json',
-	\ 'coc-python',
+	\ 'coc-jedi',
 	\ 'coc-syntax',
 	\ 'coc-tailwindcss',
 	\ 'coc-tslint-plugin',
@@ -846,6 +848,8 @@ endif
 set background=dark
 " set background=light
 set t_Co=256
+" colorscheme one
+" colorscheme onedark
 colorscheme solarized8
 " colorscheme molokai
 " colorscheme gruvbox

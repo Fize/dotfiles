@@ -53,9 +53,9 @@ public::common::install_package() {
 	if [[ ${OS} == "Darwin" ]];then
 		brew install zsh curl mosh tmux golang ag
     else
-		dnf update -y
-        dnf install -y epel-release
-		dnf install -y neovim mosh tmux golang util-linux-user cmake make gcc-c++ python3-devel autojump-zsh ag
+		yum update -y
+        yum install -y epel-release
+		yum install -y mosh tmux golang util-linux-user cmake make gcc-c++ python3-devel autojump-zsh ag
 	fi
 }
 
