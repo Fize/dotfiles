@@ -51,7 +51,7 @@ public::common::check_omz() {
 
 public::common::install_package() {
 	if [[ ${OS} == "Darwin" ]];then
-		brew install zsh curl mosh tmux golang ag
+		brew install curl mosh golang
     else
 		yum update -y
         yum install -y epel-release
@@ -77,10 +77,11 @@ private::nvim::install() {
         mv ~/.vim ~/.vim-bak
     fi
 
+    mkdir ~/.config
     ln -s ${WORKDIR} ~/.config/nvim
     ln -s ${WORKDIR} ~/.vim
 
-    vim +PlugInstall! +PlugClean!
+    nvim +PlugInstall! +PlugClean!
 }
 
 private::tmux::install() {
