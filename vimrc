@@ -207,6 +207,10 @@ Plug 'pseewald/vim-anyfold'
 Plug 'rking/ag.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+" 多光标
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+" github copilot AI 变成补全
+Plug 'github/copilot.vim'
 
 call plug#end()
 
