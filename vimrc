@@ -269,8 +269,8 @@ map <Leader><leader>k <Plug>(easymotion-k)
 map <leader>l <Plug>(easymotion-lineforward)
 map <leader>. <Plug>(easymotion-repeat)
 " <Leader>f{char} to move to {char}
-map  <Leader>f <Plug>(easymotion-bd-f)
-nmap <Leader>f <Plug>(easymotion-overwin-f)
+map  <Leader><leader>f <Plug>(easymotion-bd-f)
+nmap <Leader><leader>f <Plug>(easymotion-overwin-f)
 " s{char}{char} to move to {char}{char}
 nmap s <Plug>(easymotion-overwin-f2)
 " Move to line
@@ -590,12 +590,6 @@ autocmd BufReadPost quickfix nnoremap <buffer> s <C-w><Enter><C-w>K
 " command-line window
 autocmd CmdwinEnter * nnoremap <buffer> <CR> <CR>
 
-" 上下左右键的行为 会显示其他信息
-inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
-inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
-inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
-inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
-
 " 打开自动定位到最后编辑的位置, 需要确认 .viminfo 当前用户可写
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -606,12 +600,6 @@ endif
 "==========================================
 
 " 主要按键重定义
-
-" 关闭方向键, 强迫自己用 hjkl
-map <Left> <Nop>
-map <Right> <Nop>
-map <Up> <Nop>
-map <Down> <Nop>
 
 "Treat long lines as break lines (useful when moving around in them)
 "se swap之后，同物理行上线直接跳
@@ -689,7 +677,7 @@ endfunction
 command! ZoomToggle call s:ZoomToggle()
 nnoremap <silent> <Leader>z :ZoomToggle<CR>
 
-" Go to home and end using capitalized directions
+" 调到行首或行位
 noremap H ^
 noremap L $
 
@@ -705,7 +693,7 @@ cnoremap <C-e> <End>
 
 " 搜索相关
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
-map <space> /
+" map <space> /
 " 进入搜索Use sane regexes"
 nnoremap / /\v
 vnoremap / /\v
