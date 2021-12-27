@@ -6,3 +6,9 @@
 - bat
 - ccat
 - neovim
+
+## Install
+
+```
+ $ ./install.sh
+```

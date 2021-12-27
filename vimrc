@@ -129,6 +129,9 @@ function! NumberToggle()
 endfunc
 nnoremap <C-n> :call NumberToggle()<cr>
 
+" polyglot 配置
+set nocompatible
+
 "==========================================
 " FileEncode Settings 文件编码,格式
 "==========================================
@@ -176,6 +179,7 @@ Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'vim-syntastic/syntastic'
 Plug 'elzr/vim-json'
 Plug 'tpope/vim-commentary'
+Plug 'sheerun/vim-polyglot'
 " 主题
 Plug 'lifepillar/vim-solarized8'
 Plug 'tomasr/molokai'
@@ -183,6 +187,7 @@ Plug 'morhetz/gruvbox'
 Plug 'sainnhe/gruvbox-material'
 Plug 'rakr/vim-one'
 Plug 'joshdick/onedark.vim'
+Plug 'phanviet/vim-monokai-pro'
 " 底栏
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -196,7 +201,7 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " markdown
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 Plug 'plasticboy/vim-markdown'
 " 代码补全
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -211,6 +216,8 @@ Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 " github copilot AI 变成补全
 Plug 'github/copilot.vim'
+" 语法高亮
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 
 call plug#end()
 
@@ -256,11 +263,22 @@ nmap ga <Plug>(EasyAlign)
 
 " easymotion/vim-easymotion 更高效的移动
 let g:EasyMotion_smartcase = 1
-map <Leader><leader>h <Plug>(easymotion-linebackward)
-map <Leader><Leader>j <Plug>(easymotion-j)
-map <Leader><Leader>k <Plug>(easymotion-k)
-map <Leader><leader>l <Plug>(easymotion-lineforward)
-map <Leader><leader>. <Plug>(easymotion-repeat)
+map <leader>h <Plug>(easymotion-linebackward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader><leader>k <Plug>(easymotion-k)
+map <leader>l <Plug>(easymotion-lineforward)
+map <leader>. <Plug>(easymotion-repeat)
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+" s{char}{char} to move to {char}{char}
+nmap s <Plug>(easymotion-overwin-f2)
+" Move to line
+map <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
 
 " vim-airlige/vim-airline vim-airline/vim-airline-themes
 if !exists('g:airline_symbols')
@@ -358,7 +376,6 @@ let g:coc_global_extensions = [
 	\ 'coc-css',
     \ 'coc-git',
     \ 'coc-lists',
-    \ 'coc-markdownlint',
     \ 'coc-prettier',
     \ 'coc-sh',
     \ 'coc-sql',
@@ -849,6 +866,7 @@ endif
 "==========================================
 
 " theme主题
+set termguicolors
 set background=dark
 " set background=light
 set t_Co=256
@@ -858,6 +876,7 @@ colorscheme solarized8
 " colorscheme molokai
 " colorscheme gruvbox
 " colorscheme gruvbox-material
+" colorscheme monokai_pro
 
 
 " 设置标记一列的背景颜色和数字一行颜色一致
