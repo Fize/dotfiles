@@ -860,7 +860,7 @@ set background=dark
 set t_Co=256
 " colorscheme one
 " colorscheme onedark
-colorscheme solarized8
+" colorscheme solarized8
 " colorscheme molokai
 " colorscheme gruvbox
 " colorscheme gruvbox-material
