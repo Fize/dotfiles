@@ -164,7 +164,6 @@ Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'majutsushi/tagbar'
-Plug 'lfv89/vim-interestingwords'
 Plug 'Yggdroot/indentLine'
 Plug 'Raimondi/delimitMate'
 Plug 'docunext/closetag.vim'
@@ -173,6 +172,8 @@ Plug 'tpope/vim-surround'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'junegunn/vim-easy-align'
 Plug 'easymotion/vim-easymotion'
+" 单词高亮
+Plug 'lfv89/vim-interestingwords'
 " 语法高亮
 Plug 'hdima/python-syntax'
 Plug 'Glench/Vim-Jinja2-Syntax'
@@ -188,6 +189,7 @@ Plug 'sainnhe/gruvbox-material'
 Plug 'rakr/vim-one'
 Plug 'joshdick/onedark.vim'
 Plug 'phanviet/vim-monokai-pro'
+Plug 'ashfinal/vim-colors-violet'
 " 底栏
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -211,15 +213,41 @@ Plug 'pseewald/vim-anyfold'
 " 搜索
 Plug 'rking/ag.vim'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+" Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 " 多光标
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-" github copilot AI 变成补全
+" github copilot AI 补全
 Plug 'github/copilot.vim'
 " 语法高亮
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+" Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'kien/rainbow_parentheses.vim'
 
 call plug#end()
+
+" kien/rainbow_parentheses.vim
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['black',       'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \ ]
+
+let g:rbpt_max = 16
+
+let g:rbpt_loadcmd_toggle = 0
 
 " 预览markdown快捷键
 nmap <C-s> <Plug>MarkdownPreview
@@ -265,12 +293,12 @@ nmap ga <Plug>(EasyAlign)
 let g:EasyMotion_smartcase = 1
 map <leader>h <Plug>(easymotion-linebackward)
 map <Leader>j <Plug>(easymotion-j)
-map <Leader><leader>k <Plug>(easymotion-k)
+map <Leader>k <Plug>(easymotion-k)
 map <leader>l <Plug>(easymotion-lineforward)
 map <leader>. <Plug>(easymotion-repeat)
 " <Leader>f{char} to move to {char}
-map  <Leader><leader>f <Plug>(easymotion-bd-f)
-nmap <Leader><leader>f <Plug>(easymotion-overwin-f)
+map  <leader>f <Plug>(easymotion-bd-f)
+nmap <leader>f <Plug>(easymotion-overwin-f)
 " s{char}{char} to move to {char}{char}
 nmap s <Plug>(easymotion-overwin-f2)
 " Move to line
@@ -279,6 +307,14 @@ nmap <Leader>L <Plug>(easymotion-overwin-line)
 " Move to word
 map  <Leader>w <Plug>(easymotion-bd-w)
 nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+" lfv89/vim-interestingwords 单词高亮
+let g:interestingWordsDefaultMappings = 0
+nnoremap <silent> <leader><leader>k :call InterestingWords('n')<cr>
+vnoremap <silent> <leader><leader>k :call InterestingWords('v')<cr>
+nnoremap <silent> <leader><leader>K :call UncolorAllWords()<cr>
+nnoremap <silent> n :call WordNavigation(1)<cr>
+nnoremap <silent> N :call WordNavigation(0)<cr>
 
 " vim-airlige/vim-airline vim-airline/vim-airline-themes
 if !exists('g:airline_symbols')
@@ -860,11 +896,12 @@ set background=dark
 set t_Co=256
 " colorscheme one
 " colorscheme onedark
-" colorscheme solarized8
+colorscheme solarized8
 " colorscheme molokai
 " colorscheme gruvbox
 " colorscheme gruvbox-material
 " colorscheme monokai_pro
+" colorscheme violet
 
 
 " 设置标记一列的背景颜色和数字一行颜色一致
