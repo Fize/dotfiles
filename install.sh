@@ -2,7 +2,7 @@
 # Author: malzahar
 # email: malzaharguo@gmail.com
 
-export support_linux_release=("CentOS")
+export support_linux_release=("CentOS" "Ubuntu")
 export WORKDIR=$(pwd)
 
 public::common::check_system() {

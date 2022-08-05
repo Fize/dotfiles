@@ -918,3 +918,11 @@ highlight clear SpellRare
 highlight SpellRare term=underline cterm=underline
 highlight clear SpellLocal
 highlight SpellLocal term=underline cterm=underline
+
+let s:core_conf_files = [
+      \ 'coc.vim',
+      \ ]
+
+for s:fname in s:core_conf_files
+  execute printf('source %s', s:fname)
+endfor
