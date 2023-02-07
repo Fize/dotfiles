@@ -20,11 +20,12 @@ filetype plugin indent on
 
 " 文件修改之后自动载入
 set autoread
-
 " 突出显示当前列
 set cursorcolumn
 " 突出显示当前行
 set cursorline
+" Cannot make changes, 'Modifiable' is off
+set ma
 
 " 设置 退出vim后，内容显示在终端屏幕, 可以用于查看和复制, 不需要可以去掉
 " 好处：误删什么的，如果以前屏幕打开，可以找回
@@ -207,7 +208,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 Plug 'plasticboy/vim-markdown'
 " 代码补全
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " 代码折叠
 Plug 'pseewald/vim-anyfold'
 " 搜索
@@ -222,6 +223,8 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'kien/rainbow_parentheses.vim'
+" AI 代码开发 copilot
+Plug 'github/copilot.vim'
 
 call plug#end()
 
