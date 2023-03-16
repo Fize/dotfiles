@@ -15,7 +15,7 @@
   "jedi.diagnostics.didChange": true,
   "jedi.diagnostics.didSave": true,
   "languageserver": {
-    "golang": {
+    "go": {
       "command": "gopls",
       "rootPatterns": ["go.mod"],
       "trace.server": "verbose",

@@ -914,9 +914,9 @@ let g:rehash256 = 1
 let g:molokai_original = 1
 " colorscheme one
 " colorscheme onedark
-" colorscheme solarized8
+colorscheme solarized8
 " colorscheme molokai
-colorscheme gruvbox
+" colorscheme gruvbox
 " colorscheme gruvbox-material
 " colorscheme monokai_pro
 " colorscheme violet
