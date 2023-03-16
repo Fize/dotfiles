@@ -7,7 +7,8 @@ let mapleader = ','
 let g:mapleader = ','
 
 " 设置语法高亮
-syntax on
+" syntax on
+syntax enable
 
 " 检测文件类型
 filetype on
@@ -191,6 +192,7 @@ Plug 'rakr/vim-one'
 Plug 'joshdick/onedark.vim'
 Plug 'phanviet/vim-monokai-pro'
 Plug 'ashfinal/vim-colors-violet'
+Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 " 底栏
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -273,7 +275,15 @@ tnoremap   <silent>   <F12>   <C-\><C-n>:FloatermToggle<CR>
 " fatih/vim-go
 let g:go_version_warning = 0
 let g:go_fmt_autosave = 1
+let g:go_autodetect_gopath = 1
 let g:go_fmt_command = "goimports"
+" let g:go_bin_path = '$GOBIN'
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_generate_tags = 1
 
 " majutsushi/tagbar
 " nmap <F8> :TagbarToggle<CR>
@@ -429,6 +439,7 @@ let g:coc_global_extensions = [
 	\ 'coc-json',
 	\ 'coc-jedi',
 	\ 'coc-syntax',
+    \ 'coc-pyright',
 	\ 'coc-tailwindcss',
 	\ 'coc-tslint-plugin',
 	\ 'coc-tsserver',
@@ -894,19 +905,25 @@ endif
 "==========================================
 
 " theme主题
+" syntax enable
 set termguicolors
 set background=dark
 " set background=light
 set t_Co=256
+let g:rehash256 = 1
+let g:molokai_original = 1
 " colorscheme one
 " colorscheme onedark
 " colorscheme solarized8
 " colorscheme molokai
-" colorscheme gruvbox
+colorscheme gruvbox
 " colorscheme gruvbox-material
 " colorscheme monokai_pro
-colorscheme violet
+" colorscheme violet
+" colorscheme tokyonight
 
+" python语法高亮
+let python_highlight_all = 1
 
 " 设置标记一列的背景颜色和数字一行颜色一致
 hi! link SignColumn   LineNr
@@ -922,3 +939,6 @@ highlight clear SpellRare
 highlight SpellRare term=underline cterm=underline
 highlight clear SpellLocal
 highlight SpellLocal term=underline cterm=underline
+
+" vim中直接读取配置文件
+nnoremap <Leader>vr :source $MYVIMRC<CR>

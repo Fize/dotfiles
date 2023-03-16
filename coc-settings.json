@@ -1,16 +1,6 @@
 {
-  "coc.preferences.formatOnSaveFiletypes": [
-    "javascript",
-    "typescript",
-    "html",
-    "css",
-    "json",
-    "python",
-    "vue"
-  ],
   "yaml.format.enable": true,
   "html.format.enable": true,
-  "javascript.referencesCodeLens.enable": true,
   "javascript.showUnused": true,
   "javascript.suggest.names": true,
   "javascript.suggestionActions.enabled": true,
@@ -25,7 +15,7 @@
   "jedi.diagnostics.didChange": true,
   "jedi.diagnostics.didSave": true,
   "languageserver": {
-    "go": {
+    "golang": {
       "command": "gopls",
       "rootPatterns": ["go.mod"],
       "trace.server": "verbose",
