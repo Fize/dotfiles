@@ -2,10 +2,10 @@
 # Author: malzahar
 # email: malzaharguo@gmail.com
 
-export support_linux_release=("CentOS" "Ubuntu")
+export support_linux_release=("CentOS" "Ubuntu" "Fedora")
 export WORKDIR=$(pwd)
 
-public::common::check_system() {
+check_system() {
 	local system=$(uname)
 	if [[ ${system} != "Linux" && ${system} != "Darwin" ]];then
 		printf "unsupport this system %s\n" ${system}
@@ -42,62 +42,85 @@ public::common::check_system() {
 	done
 }
 
-public::common::check_omz() {
-    if [[ ! -d ~/.oh-my-zsh ]];then
-        echo "must install oh-my-zsh before"
-        exit 0
-    fi
-}
-
-public::common::install_package() {
-	if [[ ${OS} == "Darwin" ]];then
-		brew install curl mosh golang
-    else
-		yum update -y
-        yum install -y epel-release
-		yum install -y mosh tmux golang util-linux-user cmake make gcc-c++ python3-devel autojump-zsh ag
+check_omz() {
+	if [[ ! -d ~/.oh-my-zsh ]];then
+	    echo "You must install oh-my-zsh first"
+	    exit 0
 	fi
 }
 
-private::zsh::plugin() {
-	git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+install_go_on_ubuntu() {
+	wget https://studygolang.com/dl/golang/go1.20.2.linux-amd64.tar.gz
+	tar xvzf go1.20.2.linux-amd64.tar.gz
+	sudo mv go /usr/local
+	rm -f go1.20.2.linux-amd64.tar.gz
 }
 
-private::zsh::config() {
+install_package() {
+	if [[ ${OS} == "Darwin" ]];then
+		brew install curl golang fd-find the_silver_searcher node
+		brew install --HEAD neovim
+	elif [[ ${OS} == "CentOS" ]];then
+		sudo yum update -y
+		sudo yum install -y epel-release
+		sudo yum install -y tmux golang util-linux-user cmake make gcc-c++ \
+			python3-devel the_silver_searcher autojump-zsh neovim python3-neovim nodejs
+		install_go_on_ubuntu
+	elif [[ ${OS} == "Ubuntu" ]];then
+		sudo apt-get install software-properties-common
+		sudo add-apt-repository ppa:neovim-ppa/stable
+		curl -fsSL https://deb.nodesource.com/setup_19.x | sudo -E bash -
+		sudo apt update -y
+		sudo apt upgrade -y
+		sudo apt install -y make tmux cmake g++ python3-dev python-dev python-pip python3-pip \
+			autojump silversearcher-ag fd-find nodejsa \
+		sudo apt -y install neovim
+	else
+		sudo dnf update -y
+		sudo dnf install -y the_silver_searcher tmux gcc-c++ make cmake \
+			neovim python3-neovim nodejs golang
+	fi
+}
+
+install_zsh_plugin() {
+	git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+}
+
+config() {
 	sed -i 's#plugins=(git)#plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump)#' ~/.zshrc
 	sed -i '/zsh-autosuggestions/aZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"' ~/.zshrc
+	echo ". /usr/share/autojump/autojump.sh" >> ~/.zshrc
 	echo "export GOPROXY=https://goproxy.cn" >> ~/.zshrc
+	echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.zshrc
 }
 
-private::nvim::install() {
-    curl -sL install-node.now.sh/lts | bash
-
-    if [[ -d ~/.vim ]];then
-        mv ~/.vim ~/.vim-bak
-    fi
-
-    mkdir ~/.config
-    ln -s ${WORKDIR} ~/.config/nvim
-    ln -s ${WORKDIR} ~/.vim
-
-    nvim +PlugInstall! +PlugClean!
+install_neovim_config() {
+	curl -sL install-node.now.sh/lts | bash
+	if [[ -d ~/.vim ]];then
+	    mv ~/.vim ~/.vim-bak
+	fi
+	mkdir ~/.config
+	ln -s ${WORKDIR} ~/.config/nvim
+	ln -s ${WORKDIR} ~/.vim
+	nvim +PlugInstall! +PlugClean!
 }
 
-private::tmux::install() {
-    cd
-    git clone https://github.com/gpakosz/.tmux.git
-    ln -s -f .tmux/.tmux.conf
-    cp .tmux/.tmux.conf.local .
-    cd ${WORKDIR}
+install_tmux() {
+	cd
+	git clone https://github.com/gpakosz/.tmux.git
+	ln -s -f .tmux/.tmux.conf
+	cp .tmux/.tmux.conf.local .
+	cd ${WORKDIR}
 }
 
-public::common::main() {
-	public::common::check_system
-	public::common::install_package
-	private::zsh::plugin
-	private::zsh::config
-    private::nvim::install
+main() {
+	check_omz
+	check_system
+	install_package
+	install_zsh_plugin
+	config
+	install_tmux
 }
 
-public::common::main "$@"
+main "$@"
