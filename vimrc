@@ -163,8 +163,6 @@ set formatoptions+=B
 call plug#begin('~/.vim/plugged')
 
 Plug 'mhinz/vim-startify'
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-fugitive'
 Plug 'majutsushi/tagbar'
 Plug 'Yggdroot/indentLine'
 Plug 'Raimondi/delimitMate'
@@ -186,13 +184,8 @@ Plug 'sheerun/vim-polyglot'
 " 主题
 Plug 'lifepillar/vim-solarized8'
 Plug 'tomasr/molokai'
-Plug 'morhetz/gruvbox'
-Plug 'sainnhe/gruvbox-material'
-Plug 'rakr/vim-one'
-Plug 'joshdick/onedark.vim'
-Plug 'phanviet/vim-monokai-pro'
 Plug 'ashfinal/vim-colors-violet'
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+Plug 'arcticicestudio/nord-vim'
 " 底栏
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -208,6 +201,9 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " markdown
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 Plug 'plasticboy/vim-markdown'
+Plug 'elzr/vim-json'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 " 代码补全
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -216,7 +212,6 @@ Plug 'pseewald/vim-anyfold'
 " 搜索
 Plug 'rking/ag.vim'
 Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 " 多光标
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 " github copilot AI 补全
@@ -255,12 +250,31 @@ let g:rbpt_max = 16
 let g:rbpt_loadcmd_toggle = 0
 
 " 预览markdown快捷键
-nmap <C-s> <Plug>MarkdownPreview
+nmap <C-m> <Plug>MarkdownPreview
 
+" 编辑markdown配置
+" disable header folding
+let g:vim_markdown_folding_disabled = 1
+" do not use conceal feature, the implementation is not so good
+let g:vim_markdown_conceal = 0
+" disable math tex conceal feature
+let g:tex_conceal = ""
+let g:vim_markdown_math = 1
+" support front matter of various format
+let g:vim_markdown_frontmatter = 1  " for YAML format
+let g:vim_markdown_toml_frontmatter = 1  " for TOML format
+let g:vim_markdown_json_frontmatter = 1  " for JSON format
+
+" 搜索
 nmap <C-p> <Plug>CtrlP
 
 " airblade/vim-gitgutter
 let g:gitgutter_max_signs=10000
+
+" Goyo and limelight
+nmap <leader>g :Goyo<CR>
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
 
 " 终端
 nnoremap   <silent>   <F7>    :FloatermNew<CR>
@@ -912,15 +926,10 @@ set background=dark
 set t_Co=256
 let g:rehash256 = 1
 let g:molokai_original = 1
-" colorscheme one
-" colorscheme onedark
-colorscheme solarized8
+" colorscheme solarized8
 " colorscheme molokai
-" colorscheme gruvbox
-" colorscheme gruvbox-material
-" colorscheme monokai_pro
 " colorscheme violet
-" colorscheme tokyonight
+colorscheme nord
 
 " python语法高亮
 let python_highlight_all = 1
