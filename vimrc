@@ -186,6 +186,7 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'tomasr/molokai'
 Plug 'ashfinal/vim-colors-violet'
 Plug 'arcticicestudio/nord-vim'
+Plug 'tomasiser/vim-code-dark'
 " 底栏
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -929,7 +930,8 @@ let g:molokai_original = 1
 " colorscheme solarized8
 " colorscheme molokai
 " colorscheme violet
-colorscheme nord
+" colorscheme nord
+colorscheme codedark
 
 " python语法高亮
 let python_highlight_all = 1

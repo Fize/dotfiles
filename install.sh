@@ -96,7 +96,6 @@ config() {
 }
 
 install_neovim_config() {
-	curl -sL install-node.now.sh/lts | bash
 	if [[ -d ~/.vim ]];then
 	    mv ~/.vim ~/.vim-bak
 	fi
