@@ -186,11 +186,8 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'tomasr/molokai'
 Plug 'ashfinal/vim-colors-violet'
 Plug 'arcticicestudio/nord-vim'
-<<<<<<< HEAD
 Plug 'tomasiser/vim-code-dark'
-=======
 Plug 'dracula/vim', { 'as': 'dracula' }
->>>>>>> 785f0e3 (修改配置；添加新主题)
 " 底栏
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
