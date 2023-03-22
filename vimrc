@@ -186,7 +186,11 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'tomasr/molokai'
 Plug 'ashfinal/vim-colors-violet'
 Plug 'arcticicestudio/nord-vim'
+<<<<<<< HEAD
 Plug 'tomasiser/vim-code-dark'
+=======
+Plug 'dracula/vim', { 'as': 'dracula' }
+>>>>>>> 785f0e3 (修改配置；添加新主题)
 " 底栏
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -213,10 +217,9 @@ Plug 'pseewald/vim-anyfold'
 " 搜索
 Plug 'rking/ag.vim'
 Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 " 多光标
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-" github copilot AI 补全
-" Plug 'github/copilot.vim'
 " 语法高亮
 " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 Plug 'nvim-treesitter/nvim-treesitter'
@@ -932,6 +935,7 @@ let g:molokai_original = 1
 " colorscheme violet
 " colorscheme nord
 colorscheme codedark
+" colorscheme dracula
 
 " python语法高亮
 let python_highlight_all = 1
