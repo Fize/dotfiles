@@ -1,5 +1,7 @@
 local opt = vim.opt
 
+opt.syntax = "yes"
+
 -- 行号
 opt.relativenumber = true
 opt.number = true
@@ -12,6 +14,9 @@ opt.autoindent = true
 
 -- 光标行
 opt.cursorline = true
+opt.cursorcolumn = true
+-- 上下移动光标时上方或下方至少保留的行数
+opt.scrolloff = 7
 
 -- 防止包裹
 opt.wrap = false
@@ -30,9 +35,16 @@ opt.splitbelow = true
 opt.ignorecase = true
 opt.smartcase = true
 
+-- 禁止创建备份文件
+opt.backup = false
+opt.writebackup = false
+opt.swapfile = false
+
 -- 外观
 opt.termguicolors = true
 opt.signcolumn = "yes"
+opt.background = "dark"
+
+-- 主题
 vim.cmd [[colorscheme dracula]]
 
-vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.formatting_sync(nil,500)]]

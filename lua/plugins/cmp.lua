@@ -1,10 +1,26 @@
-local cmp = require('cmp')
+local cmp_status_ok, cmp = pcall(require, "cmp")
+if not cmp_status_ok then
+  return
+end
+
+local snip_status_ok, luasnip = pcall(require, "luasnip")
+if not snip_status_ok then
+  return
+end
+
+require("luasnip.loaders.from_vscode").lazy_load()
+
+local check_backspace = function()
+  local col = vim.fn.col "." - 1
+  return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
+end
+
 
 cmp.setup({
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        require('luasnip').lsp_expand(args.body)
     end,
   },
 
@@ -15,18 +31,18 @@ cmp.setup({
       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 
       ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expandable() then
-        luasnip.expand()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif check_backspace() then
-        fallback()
-      else
-        fallback()
-      end
-    end, {
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif luasnip.expandable() then
+          luasnip.expand()
+        elseif luasnip.expand_or_jumpable() then
+          luasnip.expand_or_jump()
+        elseif check_backspace() then
+          fallback()
+        else
+          fallback()
+        end
+      end, {
       "i",
       "s",
     }),
@@ -47,10 +63,10 @@ cmp.setup({
 
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
-    { name = 'vsnip' }, -- For vsnip users.
+    { name = 'luasnip' },
+    { name = 'path' },
   }, {
     { name = 'buffer' },
-    { name = 'path' }
   })
 })
 
@@ -60,6 +76,7 @@ cmp.setup.cmdline({ '/', '?' }, {
   sources = {
     { name = 'buffer' }
   }
+
 })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).

@@ -58,7 +58,7 @@ install_go_on_ubuntu() {
 
 install_package() {
 	if [[ ${OS} == "Darwin" ]];then
-		brew install curl golang fd-find the_silver_searcher node
+		brew install curl golang fd-find the_silver_searcher node ripgrep
 		brew install --HEAD neovim
 	elif [[ ${OS} == "CentOS" ]];then
 		sudo yum update -y
