@@ -40,11 +40,3 @@ opt.backup = false
 opt.writebackup = false
 opt.swapfile = false
 
--- 外观
-opt.termguicolors = true
-opt.signcolumn = "yes"
-opt.background = "dark"
-
--- 主题
-vim.cmd [[colorscheme dracula]]
-

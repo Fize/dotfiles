@@ -18,6 +18,8 @@ lua require("plugins.fterm")
 lua require("plugins.startup")
 lua require("plugins.leap")
 lua require("plugins.aerial")
+lua require("plugins.golang")
+lua require("plugins.theme")
 
 " 代码折叠
 autocmd Filetype * AnyFoldActivate
