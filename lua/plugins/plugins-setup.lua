@@ -28,6 +28,8 @@ return require('packer').startup(function(use)
         'uloco/bluloco.nvim',
         requires = { 'rktjmp/lush.nvim' }
     }
+    use 'folke/tokyonight.nvim'
+
     use {
         'nvim-lualine/lualine.nvim',                              -- 状态栏
         requires = { 'kyazdani42/nvim-web-devicons', opt = true } -- 状态栏图标
@@ -82,6 +84,11 @@ return require('packer').startup(function(use)
     -- 代码补全
     use {'neoclide/coc.nvim', branch = 'release'}
     use 'fatih/vim-go'
+    -- TODO高亮
+    use {
+      "folke/todo-comments.nvim",
+      requires = "nvim-lua/plenary.nvim",
+    }
 
 
     if packer_bootstrap then
