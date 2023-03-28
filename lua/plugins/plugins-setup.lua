@@ -50,18 +50,6 @@ return require('packer').startup(function(use)
         "williamboman/mason-lspconfig.nvim",
         "neovim/nvim-lspconfig"
     }
-    -- 自动补全
-    use 'hrsh7th/nvim-cmp'
-    use 'hrsh7th/cmp-nvim-lsp'
-    use 'hrsh7th/cmp-buffer'
-    use 'hrsh7th/cmp-path'
-    use 'hrsh7th/cmp-cmdline'
-    use 'rafamadriz/friendly-snippets'
-    use 'saadparwaiz1/cmp_luasnip'
-    use 'L3MON4D3/LuaSnip'
-    -- golang 相关
-    use 'ray-x/go.nvim'
-    use 'ray-x/guihua.lua'
 
     use 'numToStr/Comment.nvim' -- 注释
     use 'windwp/nvim-autopairs' -- 自动补全括号
@@ -91,6 +79,9 @@ return require('packer').startup(function(use)
     use 'lfv89/vim-interestingwords'
     -- 函数导航
     use 'stevearc/aerial.nvim'
+    -- 代码补全
+    use {'neoclide/coc.nvim', branch = 'release'}
+    use 'fatih/vim-go'
 
 
     if packer_bootstrap then

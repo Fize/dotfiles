@@ -1,0 +1,34 @@
+{
+  "yaml.format.enable": true,
+  "html.format.enable": true,
+  "javascript.showUnused": true,
+  "javascript.suggest.names": true,
+  "javascript.suggestionActions.enabled": true,
+  "json.format.enable": true,
+  "yaml.schemas": {
+    "kubernetes": "/*.yaml"
+  },
+  "jedi.enable": true,
+  "jedi.trace.server": "messages",
+  "jedi.diagnostics.enable": true,
+  "jedi.diagnostics.didOpen": true,
+  "jedi.diagnostics.didChange": true,
+  "jedi.diagnostics.didSave": true,
+  "languageserver": {
+    "go": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod"],
+      "trace.server": "verbose",
+      "filetypes": ["go"]
+    },
+    "dockerfile": {
+      "command": "docker-langserver",
+      "filetypes": ["dockerfile"],
+      "args": ["--stdio"]
+    },
+    "lua": {
+      "command": "lua-lsp",
+      "filetypes": ["lua"]
+    }
+  }
+}

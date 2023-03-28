@@ -21,10 +21,3 @@ npairs.setup {
   },
 }
 
--- 配置这个使得自动补全会把括号带上
-local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-local cmp = require('cmp')
-cmp.event:on(
-  'confirm_done',
-  cmp_autopairs.on_confirm_done()
-)

@@ -8,8 +8,6 @@ lua require("plugins.lualine")
 lua require("plugins.nvim-tree")
 lua require("plugins.treesitter")
 lua require("plugins.bufferline")
-lua require("plugins.lsp")
-lua require("plugins.cmp")
 lua require("plugins.gitsigns")
 lua require("plugins.comment")
 lua require("plugins.autopairs")
@@ -18,8 +16,8 @@ lua require("plugins.fterm")
 lua require("plugins.startup")
 lua require("plugins.leap")
 lua require("plugins.aerial")
-lua require("plugins.golang")
 lua require("plugins.theme")
+lua require("plugins.coc")
 
 " 代码折叠
 autocmd Filetype * AnyFoldActivate
@@ -57,3 +55,37 @@ if has("autocmd")
     autocmd Syntax * call matchadd('Debug', '\W\zs\(NOTE\|INFO\|IDEA\|NOTICE\)')
   endif
 endif
+
+" coc 扩展
+let g:coc_global_extensions = [
+    \ 'coc-sh',
+	\ 'coc-css',
+	\ 'coc-docker',
+    \ 'coc-go',
+	\ 'coc-html',
+	\ 'coc-tsserver',
+	\ 'coc-json',
+    \ 'coc-lua',
+    \ 'coc-markdownlint',
+	\ 'coc-pyright',
+	\ 'coc-vetur',
+    \ 'coc-lists',
+    \ 'coc-prettier',
+    \ 'coc-sql',
+    \ 'coc-toml',
+	\ 'coc-emmet',
+	\ 'coc-eslint',
+	\ 'coc-yaml']
+
+" fatih/vim-go
+let g:go_version_warning = 0
+let g:go_fmt_autosave = 1
+let g:go_autodetect_gopath = 1
+let g:go_fmt_command = "goimports"
+" let g:go_bin_path = '$GOBIN'
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_generate_tags = 1
