@@ -89,8 +89,11 @@ return require('packer').startup(function(use)
       "folke/todo-comments.nvim",
       requires = "nvim-lua/plenary.nvim",
     }
-
+    -- png显示
     use {'edluffy/hologram.nvim'}
+    -- 环绕添加引号括号等
+    use {'tpope/vim-repeat'}
+    use {'tpope/vim-surround'}
 
 
     if packer_bootstrap then
