@@ -19,6 +19,7 @@ lua require("plugins.aerial")
 lua require("plugins.theme")
 lua require("plugins.coc")
 lua require("plugins.todo")
+lua require("plugins.hologram-png")
 
 " 代码折叠
 autocmd Filetype * AnyFoldActivate
