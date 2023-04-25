@@ -47,11 +47,11 @@ return require('packer').startup(function(use)
     use "akinsho/bufferline.nvim"         -- buffer分割线
     use "lewis6991/gitsigns.nvim"         -- 左侧git提示
     -- lsp
-    use {
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
-        "neovim/nvim-lspconfig"
-    }
+    -- use {
+    --     "williamboman/mason.nvim",
+    --     "williamboman/mason-lspconfig.nvim",
+    --     "neovim/nvim-lspconfig"
+    -- }
 
     use 'numToStr/Comment.nvim' -- 注释
     use 'windwp/nvim-autopairs' -- 自动补全括号
