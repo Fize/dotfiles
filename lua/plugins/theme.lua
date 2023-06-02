@@ -10,5 +10,6 @@ require("bluloco").setup({
 vim.opt.signcolumn = "yes"
 -- vim.opt.background = "dark"
 vim.opt.termguicolors = true
-vim.cmd('colorscheme bluloco')
+-- vim.cmd('colorscheme bluloco')
 -- vim.cmd[[colorscheme tokyonight]]
+vim.cmd[[colorscheme nord]]

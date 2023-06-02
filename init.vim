@@ -70,7 +70,6 @@ let g:coc_global_extensions = [
     \ 'coc-lua',
     \ 'coc-markdownlint',
 	\ 'coc-pyright',
-	\ 'coc-vetur',
     \ 'coc-lists',
     \ 'coc-prettier',
     \ 'coc-sql',
@@ -78,6 +77,8 @@ let g:coc_global_extensions = [
 	\ 'coc-emmet',
 	\ 'coc-eslint',
 	\ 'coc-yaml']
+	" \ 'coc-vetur',
+    " CocInstall @yaegassy/coc-volar
 
 " fatih/vim-go
 let g:go_version_warning = 0
