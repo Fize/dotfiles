@@ -105,21 +105,12 @@ install_neovim_config() {
 	nvim +PlugInstall! +PlugClean!
 }
 
-install_tmux() {
-	cd
-	git clone https://github.com/gpakosz/.tmux.git
-	ln -s -f .tmux/.tmux.conf
-	cp .tmux/.tmux.conf.local .
-	cd ${WORKDIR}
-}
-
 main() {
 	check_omz
 	check_system
 	install_package
 	install_zsh_plugin
 	config
-	install_tmux
 }
 
 main "$@"
