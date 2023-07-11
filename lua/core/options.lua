@@ -40,3 +40,29 @@ opt.backup = false
 opt.writebackup = false
 opt.swapfile = false
 
+local g = vim.g
+
+g.interestingWordsDefaultMappings = 0
+
+g.FoldMethod = 0
+
+local api = vim.api
+
+api.nvim_create_autocmd("User", {
+    pattern = "GoyoEnter",
+    command = "Limelight",
+})
+
+api.nvim_create_autocmd("User", {
+    pattern = "GoyoLeave",
+    command = "Limelight!",
+})
+
+api.nvim_create_autocmd("Filetype", {
+    pattern = "*",
+    command = "AnyFoldActivate",
+})
+
+vim.cmd("set foldmethod=indent")
+vim.cmd("set foldlevel=99")
+

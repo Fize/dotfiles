@@ -37,12 +37,3 @@ vim.keymap.set('n', '<leader>b', function()
     btop:toggle()
 end)
 
--- 打开k9s
-local k9s = fterm:new({
-    ft = 'fterm_k9s',
-    cmd = "k9s"
-})
-
-vim.keymap.set('n', '<leader>k', function()
-    k9s:toggle()
-end)

@@ -8,7 +8,7 @@ require("bluloco").setup({
 
 -- 外观
 vim.opt.signcolumn = "yes"
--- vim.opt.background = "dark"
+vim.opt.background = "dark"
 vim.opt.termguicolors = true
 -- vim.cmd('colorscheme bluloco')
 -- vim.cmd[[colorscheme tokyonight]]

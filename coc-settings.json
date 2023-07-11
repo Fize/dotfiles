@@ -8,12 +8,6 @@
   "yaml.schemas": {
     "kubernetes": "/*.yaml"
   },
-  "jedi.enable": true,
-  "jedi.trace.server": "messages",
-  "jedi.diagnostics.enable": true,
-  "jedi.diagnostics.didOpen": true,
-  "jedi.diagnostics.didChange": true,
-  "jedi.diagnostics.didSave": true,
   "languageserver": {
     "go": {
       "command": "gopls",
@@ -27,7 +21,7 @@
       "args": ["--stdio"]
     },
     "lua": {
-      "command": "lua-lsp",
+      "command": "lua-language-server",
       "filetypes": ["lua"]
     }
   }

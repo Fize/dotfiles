@@ -8,7 +8,7 @@ require("bufferline").setup {
     left_trunc_marker = '',
     right_trunc_marker = '',
     -- 使用 nvim 内置 lsp
-    diagnostics = "nvim_lsp",
+    -- diagnostics = "nvim_lsp",
     -- 左侧让出 nvim-tree 的位置
     offsets = {{
       filetype = "NvimTree",

@@ -1,0 +1,26 @@
+require("plugins.plugins-setup")
+
+require("core.options")
+require("core.keymaps")
+
+-- 插件
+require("plugins.lualine")
+require("plugins.nvim-tree")
+require("plugins.treesitter")
+require("plugins.bufferline")
+require("plugins.gitsigns")
+require("plugins.comment")
+require("plugins.autopairs")
+require("plugins.telescope")
+require("plugins.fterm")
+require("plugins.startup")
+require("plugins.leap")
+require("plugins.aerial")
+require("plugins.theme")
+require("plugins.todo")
+require("plugins.hologram-png")
+require("plugins.devicon")
+
+require("lsp.lspkind")
+require("lsp.cmp")
+require("lsp.lsp")
