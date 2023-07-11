@@ -122,6 +122,9 @@ return require('packer').startup(function(use)
     use 'junegunn/limelight.vim'
     use 'vim-pandoc/vim-pandoc-syntax'
 
+    -- format code
+    use({ "jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim" })
+
     if packer_bootstrap then
         require('packer').sync()
     end

@@ -20,6 +20,7 @@ require("plugins.theme")
 require("plugins.todo")
 require("plugins.hologram-png")
 require("plugins.devicon")
+require("plugins.null-ls")
 
 require("lsp.lspkind")
 require("lsp.cmp")
