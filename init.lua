@@ -21,6 +21,7 @@ require("plugins.todo")
 require("plugins.hologram-png")
 require("plugins.devicon")
 require("plugins.null-ls")
+require("plugins.haskell")
 
 require("lsp.lspkind")
 require("lsp.cmp")

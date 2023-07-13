@@ -22,7 +22,7 @@ vim.cmd([[
 
 return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
-    -- 主题
+    -- theme
     use 'dracula/vim'
     use {
         'uloco/bluloco.nvim',
@@ -30,6 +30,7 @@ return require('packer').startup(function(use)
     }
     use 'folke/tokyonight.nvim'
     use 'shaunsingh/nord.nvim'
+    use 'rmehri01/onenord.nvim'
 
     use 'kyazdani42/nvim-web-devicons'
     use {
@@ -49,8 +50,8 @@ return require('packer').startup(function(use)
     use "akinsho/bufferline.nvim"         -- buffer分割线
     use "lewis6991/gitsigns.nvim"         -- 左侧git提示
 
-    use 'numToStr/Comment.nvim' -- 注释
-    use 'windwp/nvim-autopairs' -- 自动补全括号
+    use 'numToStr/Comment.nvim'           -- 注释
+    use 'windwp/nvim-autopairs'           -- 自动补全括号
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.1',
         requires = { 'nvim-lua/plenary.nvim' }
@@ -86,8 +87,8 @@ return require('packer').startup(function(use)
     }
     use 'hrsh7th/nvim-cmp'
     use { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' }
-    use { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' } -- buffer auto-completion
-    use { 'hrsh7th/cmp-path', after = 'nvim-cmp' } -- path auto-completion
+    use { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' }  -- buffer auto-completion
+    use { 'hrsh7th/cmp-path', after = 'nvim-cmp' }    -- path auto-completion
     use { 'hrsh7th/cmp-cmdline', after = 'nvim-cmp' } -- cmdline auto-completion
     use 'onsails/lspkind-nvim'
     -- For vsnip users.
@@ -104,14 +105,14 @@ return require('packer').startup(function(use)
     use 'dcampos/cmp-snippy'
     -- TODO高亮
     use {
-      "folke/todo-comments.nvim",
-      requires = "nvim-lua/plenary.nvim",
+        "folke/todo-comments.nvim",
+        requires = "nvim-lua/plenary.nvim",
     }
     -- png显示
-    use {'edluffy/hologram.nvim'}
+    use { 'edluffy/hologram.nvim' }
     -- 环绕添加引号括号等
-    use {'tpope/vim-repeat'}
-    use {'tpope/vim-surround'}
+    use { 'tpope/vim-repeat' }
+    use { 'tpope/vim-surround' }
 
     -- markdown
     use({
