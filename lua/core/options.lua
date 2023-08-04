@@ -44,7 +44,7 @@ local g = vim.g
 
 g.interestingWordsDefaultMappings = 0
 
-g.FoldMethod = 0
+-- g.FoldMethod = 0
 
 local api = vim.api
 
@@ -63,6 +63,7 @@ api.nvim_create_autocmd("Filetype", {
     command = "AnyFoldActivate",
 })
 
-vim.cmd("set foldmethod=indent")
+vim.cmd("set foldmethod=expr")
 vim.cmd("set foldlevel=99")
-
+vim.cmd("set foldexpr=nvim_treesitter#foldexpr()")
+-- vim.cmd("set foldenable=false")

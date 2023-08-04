@@ -57,15 +57,17 @@ return require('packer').startup(function(use)
         requires = { 'nvim-lua/plenary.nvim' }
 
     }
+    use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
     -- 终端
     use 'numToStr/FTerm.nvim'
     -- use 'voldikss/vim-floaterm'
 
     -- 启动页
-    use {
-        'startup-nvim/startup.nvim',
-        requires = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
-    }
+    -- use {
+    --     'startup-nvim/startup.nvim',
+    --     requires = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
+    -- }
+    use 'goolord/alpha-nvim'
 
     -- 字符搜索跳转
     use 'ggandor/leap.nvim'
@@ -125,6 +127,9 @@ return require('packer').startup(function(use)
 
     -- format code
     use({ "jose-elias-alvarez/null-ls.nvim", requires = "nvim-lua/plenary.nvim" })
+
+    -- dcp
+    use 'mfussenegger/nvim-dap'
 
     if packer_bootstrap then
         require('packer').sync()
