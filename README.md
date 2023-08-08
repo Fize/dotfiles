@@ -18,3 +18,5 @@
 ```
  $ ./install.sh
 ```
+
+ln -s ./lvim-config.lua ~/.config/lvim/config.lua
