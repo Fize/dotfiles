@@ -19,7 +19,7 @@ map("n", "<leader>sv", "<C-w>v") -- 水平新增窗口
 map("n", "<leader>sh", "<C-w>s") -- 垂直新增窗口
 
 -- 取消高亮
-map("n", "<leader>/", ":nohl<CR>")
+map("n", "<leader>h", ":nohl<CR>")
 
 -- ------插件------ --
 -- nvim-tree
