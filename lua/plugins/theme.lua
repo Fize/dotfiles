@@ -11,6 +11,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.background = "dark"
 vim.opt.termguicolors = true
 -- vim.cmd('colorscheme bluloco')
--- vim.cmd [[colorscheme tokyonight]]
+vim.cmd [[colorscheme tokyonight]]
 -- vim.cmd[[colorscheme nord]]
-vim.cmd [[colorscheme onenord]]
+-- vim.cmd [[colorscheme onenord]]
+-- vim.cmd [[colorscheme vscode]]

@@ -33,8 +33,8 @@ map("n", "H", ":bprevious<CR>")
 map("n", "U", "<C-r>")
 
 -- goyo
-map("n", "<leader>c", ":Goyo<CR>")
-map("n", "<leader>cc", ":Goyo!<CR>")
+map("n", "<leader>bc", ":Goyo<CR>")
+map("n", "<leader>bq", ":Goyo!<CR>")
 
 -- keyword heigh light
 map("n", "<leader>k", ":call InterestingWords('n')<cr>")
@@ -43,13 +43,28 @@ map("n", "<leader>kk", ":call UncolorAllWords()<cr>")
 -- map("n", "<leader>zz", ":call ToggleFold()<cr>")
 
 -- Tree
-map('n', '<leader>tt', '<cmd>AerialToggle!<CR>')
+map('n', '<leader>mt', '<cmd>AerialToggle!<CR>')
 
 -- FTerm
 map('n', '<F12>', '<CMD>lua require("FTerm").toggle()<CR>')
 map('t', '<F12>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
 
 local fterm = require("FTerm")
+
+-- 打开 k9s
+local k9s = fterm:new({
+    ft = 'fterm_k9s', -- You can also override the default filetype, if you want
+    cmd = "k9s",
+    dimensions = {
+        height = 0.9,
+        width = 0.9
+    }
+})
+
+-- Use this to toggle gitui in a floating terminal
+map('n', '<leader>d', function()
+    k9s:toggle()
+end)
 
 -- 打开 tig
 local tig = fterm:new({

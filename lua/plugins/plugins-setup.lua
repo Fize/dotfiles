@@ -31,6 +31,7 @@ return require('packer').startup(function(use)
     use 'folke/tokyonight.nvim'
     use 'shaunsingh/nord.nvim'
     use 'rmehri01/onenord.nvim'
+    use 'Mofiqul/vscode.nvim'
 
     use 'kyazdani42/nvim-web-devicons'
     use {
