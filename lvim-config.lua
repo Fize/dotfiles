@@ -9,7 +9,8 @@ vim.opt.shiftwidth = 4 -- the number of spaces inserted for each indentation
 vim.opt.tabstop = 4    -- insert 2 spaces for a tab
 
 -- lvim.colorscheme = 'vscode'
-lvim.colorscheme = 'onenord'
+-- lvim.colorscheme = 'onenord'
+lvim.colorscheme = 'tokyonight'
 
 -- default, lvim, none
 lvim.builtin.lualine.style = "lvim"
@@ -32,6 +33,8 @@ lvim.plugins = {
             "nvim-tree/nvim-web-devicons"
         },
     },
+
+    { 'fatih/vim-go' },
 
     { 'Mofiqul/vscode.nvim' },
     { 'rmehri01/onenord.nvim' },
