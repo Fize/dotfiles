@@ -50,10 +50,9 @@ install_core_package() {
     else
         sudo apt update -y
 		sudo apt upgrade -y
-		sudo apt install -y software-properties-common curl gunpg ca-certificates ninja-build unzip gettext gcc \
-            make gcc g++ cmake git zsh
+		sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake git zsh
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 	fi
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 }
 
 check_omz() {
@@ -72,8 +71,7 @@ install_package() {
         curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
         echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 		sudo apt update -y
-		sudo apt install -y tmux ++ python3-dev python2-dev python3-pip \
-			autojump silversearcher-ag fd-find nodejs exa shfmt
+		sudo apt install -y tmux python3-dev python2-dev python3-pip autojump silversearcher-ag fd-find nodejs exa shfmt
         cd ~
         git clone https://github.com/neovim/neovim
         cd neovim
