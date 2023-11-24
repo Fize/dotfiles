@@ -89,6 +89,9 @@ install_lvim() {
     if [[ $(echo $?) == "0" ]];then
         LV_BRANCH='release-1.3/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.3/neovim-0.9/utils/installer/install.sh) 
         ln -s ${WORKDIR}/lvim-config.lua ~/.config/lvim/config.lua
+        printf "\n"
+        printf "LunarVim install success. Please add $HOME/.local/bin into your PATH to use command lvim.\n"
+        printf "\n"
     fi
 }
 
