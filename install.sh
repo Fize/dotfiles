@@ -102,7 +102,7 @@ config() {
         mv ~/.zshrc ~/.zshrc.bak
     fi
     cp zshrc ~/.zshrc
-    sed -i "s/{{HOME}}/$HOME/g" ~/.zshrc
+    sed -i "s#{{HOME}}#$HOME#" ~/.zshrc
 }
 
 main() {
