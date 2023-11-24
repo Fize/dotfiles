@@ -6,7 +6,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/xiaobaitu/.oh-my-zsh"
+export ZSH="{{HOME}}/.oh-my-zsh"
 
 
 export HOMEBREW_NO_AUTO_UPDATE=true
@@ -17,9 +17,7 @@ export HOMEBREW_NO_AUTO_UPDATE=true
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="robbyrussell"
 # ZSH_THEME="powerlevel10k/powerlevel10k"
-# ZSH_THEME="fino"
-# ZSH_THEME="clean"
-ZSH_THEME="sonicradish"
+ZSH_THEME="ys"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -121,15 +119,12 @@ source $ZSH/oh-my-zsh.sh
 
 alias k="kubectl"
 alias h="hexctl"
-
 alias ls="exa -G"
 alias ll="exa -Gl"
 alias l="exa -Gla"
-# alias cat="ccat"
 alias c="ccat"
-# alias vi="nvim"
-alias awk="gawk"
-alias sed="gsed"
+# alias awk="gawk"
+# alias sed="gsed"
 
 export LC_ALL="en_US.UTF-8"
 export DOCKER_BUILDKIT=1
@@ -137,35 +132,16 @@ export DOCKER_BUILDKIT=1
 # alias do="docker exec -ti devmachine zsh"
 export GO111MODULE=on
 
-
-export PATH=$PATH:/Users/xiaobaitu/go/bin
+export PATH="$PATH:/usr/local/bin"
 # export PATH=$PATH:/Users/xiaobaitu/Downloads/go/bin
 # alias go="/Users/xiaobaitu/Downloads/go/bin/go"
 
-export PATH="/usr/local/sbin:/usr/local/opt/mysql-client/bin:$PATH"
 export KUBE_EDITOR="lvim"
-
-# export http_proxy=web-proxy.tencent.com:8080
-# export https_proxy=web-proxy.tencent.com:8080
-# export ftp_proxy=web-proxy.tencent.com:8080
-# export no_proxy="127.0.0.1,9.*.*.*,10.*.*.*,172.16.*.*,192.168.*.*,tlinux-mirror.tencent-cloud.com,tlinux-mirrorlist.tencent-cloud.com,localhost,mirrors-tlinux.tencentyun.com,*.oa.com,devgw.devops.oa.com,*.local,git.code.oa.com,download.devcloud.oa.com"
-#
-# eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/jandedobbeleer.omp.json)"
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:/usr/local/opt/openssl@3/bin:/Users/xiaobaitu/.local/bin:$PATH"
-
-# export http_proxy=http://127.0.0.1:12639
-# export https_proxy=http://127.0.0.1:12639
-
-alias pac='export ALL_PROXY=http://127.0.0.1:12639 && export http_proxy=http://127.0.0.1:12639 && export https_proxy=http://127.0.0.1:12639'
-alias unpac='unset ALL_PROXY && unset http_proxy && unset https_proxy'
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 # export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 eval $(thefuck --alias)
 
-RPROMPT="[%w|%*]"
+# RPROMPT="[%w|%*]"

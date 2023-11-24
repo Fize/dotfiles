@@ -2,8 +2,9 @@
 # Author: malzahar
 # email: malzaharguo@gmail.com
 
-export support_linux_release=("CentOS" "Ubuntu" "Fedora")
+export support_linux_release=("Ubuntu")
 export WORKDIR=$(pwd)
+export NODE_MAJOR=20
 
 check_system() {
 	local system=$(uname)
@@ -13,10 +14,11 @@ check_system() {
 	fi
 
 	if [[ ${system} == "Linux" ]]; then
-		if [[ -f /etc/redhat-release ]]; then
-			export OS=$(cat /etc/redhat-release | cut -d" " -f1)
-		else
+		if [[ -f /etc/issue ]]; then
 			export OS=$(cat /etc/issue | cut -d" " -f1)
+        else
+            printf "unknown this Linux release\n"
+            exit 0
 		fi
 	else
 		export OS="Darwin"
@@ -49,37 +51,36 @@ check_omz() {
 	fi
 }
 
-install_go_on_ubuntu() {
-	wget https://studygolang.com/dl/golang/go1.20.2.linux-amd64.tar.gz
-	tar xvzf go1.20.2.linux-amd64.tar.gz
-	sudo mv go /usr/local
-	rm -f go1.20.2.linux-amd64.tar.gz
-}
-
 install_package() {
 	if [[ ${OS} == "Darwin" ]]; then
-		brew install curl golang fd-find the_silver_searcher node ripgrep shfmt
+		brew install curl golang fd-find the_silver_searcher node ripgrep shfmt exa
 		brew install --HEAD neovim
-	elif [[ ${OS} == "CentOS" ]]; then
-		sudo yum update -y
-		sudo yum install -y epel-release
-		sudo yum install -y tmux golang util-linux-user cmake make gcc-c++ \
-			python3-devel the_silver_searcher autojump-zsh neovim python3-neovim nodejs
-		install_go_on_ubuntu
-	elif [[ ${OS} == "Ubuntu" ]]; then
-		sudo apt-get install software-properties-common
-		sudo add-apt-repository ppa:neovim-ppa/stable
-		curl -fsSL https://deb.nodesource.com/setup_19.x | sudo -E bash -
+    else
+        sudo apt update -y
+		sudo apt install -y software-properties-common curl gunpg ca-certificates ninja-build unzip gettext gcc
+        curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 		sudo apt update -y
 		sudo apt upgrade -y
-		sudo apt install -y make tmux cmake g++ python3-dev python-dev python-pip python3-pip \
-			autojump silversearcher-ag fd-find nodejsa \
-			sudo apt -y install neovim
-	else
-		sudo dnf update -y
-		sudo dnf install -y the_silver_searcher tmux gcc-c++ make cmake \
-			neovim python3-neovim nodejs golang
+		sudo apt install -y make tmux cmake g++ python3-dev python2-dev python3-pip \
+			autojump silversearcher-ag fd-find nodejs git exa shfmt
+        cd ~
+        git clone https://github.com/neovim/neovim
+        cd neovim
+        git checkout stable
+        make CMAKE_BUILD_TYPE=RelWithDebInfo
+        sudo make install
+        sudo ln -s /usr/local/bin/nvim /usr/bin/nvim
 	fi
+}
+
+# use lvim instead of custom nvim
+install_lvim() {
+    nvim --version | grep "NVIM v0.9."
+    if [[ $(echo $?) == "0" ]];then
+        LV_BRANCH='release-1.3/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.3/neovim-0.9/utils/installer/install.sh) 
+        ln -s ${WORKDIR}/lvim-config.lua ~/.config/lvim/config.lua
+    fi
 }
 
 install_zsh_plugin() {
@@ -88,27 +89,18 @@ install_zsh_plugin() {
 }
 
 config() {
-	sed -i 's#plugins=(git)#plugins=(git zsh-autosuggestions zsh-syntax-highlighting autojump)#' ~/.zshrc
-	sed -i '/zsh-autosuggestions/aZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"' ~/.zshrc
-	echo ". /usr/share/autojump/autojump.sh" >>~/.zshrc
-	echo "export GOPROXY=https://goproxy.cn" >>~/.zshrc
-	echo "export PATH=$PATH:/usr/local/go/bin" >>~/.zshrc
-}
-
-install_neovim_config() {
-	if [[ -d ~/.vim ]]; then
-		mv ~/.vim ~/.vim-bak
-	fi
-	mkdir ~/.config
-	ln -s ${WORKDIR} ~/.config/nvim
-	ln -s ${WORKDIR} ~/.vim
-	nvim +PlugInstall! +PlugClean!
+    if [[ -f ~/.zshrc ]]; then
+        mv ~/.zshrc ~/.zshrc.bak
+    fi
+    cp zshrc ~/.zshrc
+    sed -i "s/{{HOME}}/$HOME/g" ~/.zshrc
 }
 
 main() {
 	check_omz
 	check_system
 	install_package
+    install_lvim
 	install_zsh_plugin
 	config
 }

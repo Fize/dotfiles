@@ -10,7 +10,7 @@ vim.opt.tabstop = 4    -- insert 2 spaces for a tab
 
 -- lvim.colorscheme = 'vscode'
 -- lvim.colorscheme = 'onenord'
-lvim.colorscheme = 'tokyonight'
+-- lvim.colorscheme = 'tokyonight'
 
 -- default, lvim, none
 lvim.builtin.lualine.style = "lvim"
@@ -92,8 +92,8 @@ lvim.keys.normal_mode["<leader>mt"] = "<cmd>AerialToggle!<CR>"
 lvim.keys.normal_mode["L"] = ":bnext<CR>"
 lvim.keys.normal_mode["H"] = ":bprevious<CR>"
 
-lvim.keys.normal_mode["<leader>ts"] = "<C-w>v"
-lvim.keys.normal_mode["<leader>th"] = "<C-w>s"
+lvim.keys.normal_mode["<leader>sv"] = "<C-w>v"
+lvim.keys.normal_mode["<leader>sh"] = "<C-w>s"
 
 lvim.keys.insert_mode["kj"] = "<ESC>"
 

@@ -1,22 +1,34 @@
 # dotfiles
 
-- ag
-- autojump
-- fd
-- bat
-- ccat
-- neovim
-- shfmt
+dotfile and configuration for myself.
 
-## font
+## Fonts
 
-- IntelOne Mono
-- mononoki Nerd Font Mono
+- IntelOne Mono(this my main font)
+- Other Nerd Fonts
 
-## Install
+## Usage
+
+support MacOS and Ubuntu
+
+### Requirment
+
+- zsh
+- oh-my-zsh
+- tmux
+
+#### MacOS
+
+- iterm2
+
+#### Windows
+
+- wsl2
+- wsl ubuntu
+- Windows Terminal
+
+### Install
 
 ```
  $ ./install.sh
 ```
-
-ln -s ./lvim-config.lua ~/.config/lvim/config.lua
