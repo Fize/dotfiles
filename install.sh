@@ -44,32 +44,43 @@ check_system() {
 	done
 }
 
+install_core_package() {
+	if [[ ${OS} == "Darwin" ]]; then
+		brew install curl git unzip zsh
+    else
+        sudo apt update -y
+		sudo apt upgrade -y
+		sudo apt install -y software-properties-common curl gunpg ca-certificates ninja-build unzip gettext gcc \
+            make gcc g++ cmake git zsh
+	fi
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+}
+
 check_omz() {
 	if [[ ! -d ~/.oh-my-zsh ]]; then
-		echo "You must install oh-my-zsh first"
+        install_core_package
 		exit 0
 	fi
 }
 
 install_package() {
 	if [[ ${OS} == "Darwin" ]]; then
-		brew install curl golang fd-find the_silver_searcher node ripgrep shfmt exa
+		brew install golang fd-find the_silver_searcher node ripgrep shfmt exa
 		brew install --HEAD neovim
     else
         sudo apt update -y
-		sudo apt install -y software-properties-common curl gunpg ca-certificates ninja-build unzip gettext gcc
         curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
         echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 		sudo apt update -y
-		sudo apt upgrade -y
-		sudo apt install -y make tmux cmake g++ python3-dev python2-dev python3-pip \
-			autojump silversearcher-ag fd-find nodejs git exa shfmt
+		sudo apt install -y tmux ++ python3-dev python2-dev python3-pip \
+			autojump silversearcher-ag fd-find nodejs exa shfmt
         cd ~
         git clone https://github.com/neovim/neovim
         cd neovim
         git checkout stable
         make CMAKE_BUILD_TYPE=RelWithDebInfo
         sudo make install
+        cd $WORKDIR
         sudo ln -s /usr/local/bin/nvim /usr/bin/nvim
 	fi
 }
@@ -97,8 +108,8 @@ config() {
 }
 
 main() {
-	check_omz
 	check_system
+	check_omz
 	install_package
     install_lvim
 	install_zsh_plugin
