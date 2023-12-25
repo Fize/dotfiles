@@ -2,7 +2,7 @@
 -- Video Tutorials: https://www.youtube.com/watch?v=sFA9kX-Ud_c&list=PLhoH5vyxr6QqGu0i7tt_XoVK9v-KvZ3m6
 -- Forum: https://www.reddit.com/r/lunarvim/
 -- Discord: https://discord.com/invite/Xb9B4Ny
-lvim.lsp.installer.setup.automatic_installation = true
+-- lvim.lsp.installer.setup.automatic_installation = true
 
 -- lvim.builtin.treesitter.indent = { enable = true, disable = { "go", "python", "bash" } }
 vim.opt.shiftwidth = 4 -- the number of spaces inserted for each indentation
@@ -11,6 +11,7 @@ vim.opt.tabstop = 4    -- insert 2 spaces for a tab
 -- lvim.colorscheme = 'vscode'
 -- lvim.colorscheme = 'onenord'
 -- lvim.colorscheme = 'tokyonight'
+lvim.colorscheme = 'sonokai'
 
 -- default, lvim, none
 lvim.builtin.lualine.style = "lvim"
@@ -39,6 +40,7 @@ lvim.plugins = {
     { 'Mofiqul/vscode.nvim' },
     { 'rmehri01/onenord.nvim' },
     { 'mg979/vim-visual-multi' },
+    { 'sainnhe/sonokai' },
     { "lfv89/vim-interestingwords" },
 
     { "tpope/vim-repeat" },
@@ -77,7 +79,10 @@ lvim.plugins = {
         config = function()
             require("copilot_cmp").setup()
         end
-    }
+    },
+
+    -- instead of using the default installer
+    { "numToStr/FTerm.nvim" }
 }
 
 lvim.keys.normal_mode["<leader>bc"] = ":Goyo<CR>"
@@ -100,3 +105,53 @@ lvim.keys.insert_mode["kj"] = "<ESC>"
 -- keyword heigh light
 lvim.keys.normal_mode["<leader>k"] = ":call InterestingWords('n')<cr>"
 lvim.keys.normal_mode["<leader>kk"] = ":call UncolorAllWords()<cr>"
+
+-- 取消高亮
+lvim.keys.normal_mode["<leader>h"] = ":nohl<CR>"
+
+local fterm = require("FTerm")
+
+lvim.keys.normal_mode['<A-i>'] = function()
+    fterm:toggle()
+end
+
+-- 打开 k9s
+local k9s = fterm:new({
+    ft = 'fterm_k9s', -- You can also override the default filetype, if you want
+    cmd = "k9s",
+    dimensions = {
+        height = 0.9,
+        width = 0.9
+    }
+})
+
+-- Use this to toggle gitui in a floating terminal
+lvim.keys.normal_mode['<leader>d'] = function()
+    k9s:toggle()
+end
+
+-- 打开 tig
+local tig = fterm:new({
+    ft = 'fterm_tig', -- You can also override the default filetype, if you want
+    cmd = "tig",
+    dimensions = {
+        height = 0.9,
+        width = 0.9
+    }
+})
+
+-- Use this to toggle gitui in a floating terminal
+lvim.keys.normal_mode['<leader>g'] = function()
+    tig:toggle()
+end
+
+-- 打开glances系统信息
+local btop = fterm:new({
+    ft = 'fterm_btop',
+    cmd = "btop"
+})
+
+-- Use this to toggle btop in a floating terminal
+lvim.keys.normal_mode['<leader>b'] = function()
+    btop:toggle()
+end

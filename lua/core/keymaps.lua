@@ -23,7 +23,7 @@ map("n", "<leader>h", ":nohl<CR>")
 
 -- ------插件------ --
 -- nvim-tree
-map("n", "<leader>e", ":NvimTreeToggle<CR>")
+map("n", "<leader>e", ":Neotree<CR>")
 
 -- 切换buffer
 map("n", "L", ":bnext<CR>")

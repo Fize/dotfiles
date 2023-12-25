@@ -1,22 +1,11 @@
-#---------------------------------------------------#
-## 配置文件需要放置在 $HOME/.config/clash/config.yml
-##
-## 如果您不知道如何操作，请参阅 SS-Rule-Snippet 的 Wiki：
-## https://github.com/Hackl0us/SS-Rule-Snippet/wiki/clash(X)
-#---------------------------------------------------#
-
 # HTTP 代理端口
 port: 7890
-
 # SOCKS5 代理端口
 socks-port: 7891
-
 # Linux 和 macOS 的 redir 透明代理端口 (重定向 TCP 和 TProxy UDP 流量)
-# redir-port: 7892
-
+redir-port: 7892
 # Linux 的透明代理端口（适用于 TProxy TCP 和 TProxy UDP 流量)
-# tproxy-port: 7893
-
+tproxy-port: 7893
 # HTTP(S) and SOCKS5 共用端口
 # mixed-port: 7890
 
@@ -28,15 +17,9 @@ socks-port: 7891
 # 允许局域网的连接（可用来共享代理）
 allow-lan: true
 bind-address: "*"
-# 此功能仅在 allow-lan 设置为 true 时生效，支持三种参数：
-# "*"                           绑定所有的 IP 地址
-# 192.168.122.11                绑定一个的 IPv4 地址
-# "[aaaa::a8aa:ff:fe09:57d8]"   绑定一个 IPv6 地址
-
 # Clash 路由工作模式
 # 规则模式：rule（规则） / global（全局代理）/ direct（全局直连）
 mode: rule
-
 # Clash 默认将日志输出至 STDOUT
 # 设置日志输出级别 (默认级别：silent，即不输出任何内容，以避免因日志内容过大而导致程序内存溢出）。
 # 5 个级别：silent / info / warning / error / debug。级别越高日志输出量越大，越倾向于调试，若需要请自行开启。
@@ -44,18 +27,6 @@ log-level: silent
 
 # clash 的 RESTful API 监听地址
 external-controller: 127.0.0.1:9090
-
-# 存放配置文件的相对路径，或存放网页静态资源的绝对路径
-# Clash core 将会将其部署在 http://{{external-controller}}/ui
-# external-ui: folder
-
-# RESTful API 的口令 (可选)
-# 通过 HTTP 头中 Authorization: Bearer ${secret} 参数来验证口令
-# 当 RESTful API 的监听地址为 0.0.0.0 时，请务必设定口令以保证安全
-# secret: ""
-
-# 出站网卡接口
-# interface-name: en0
 
 # DNS 服务器和建立连接时的 静态 Hosts, 仅在 dns.enhanced-mode 模式为 redir-host 生效
 # 支持通配符域名 (例如: *.clash.dev, *.foo.*.example.com )
@@ -71,7 +42,6 @@ dns:
   enable: true
   listen: 0.0.0.0:53
   ipv6: true # 当此选项为 false 时, AAAA 请求将返回空
-
   # 以下填写的 DNS 服务器将会被用来解析 DNS 服务的域名
   # 仅填写 DNS 服务器的 IP 地址
   default-nameserver:
@@ -80,7 +50,6 @@ dns:
   enhanced-mode: fake-ip # 或 redir-host
   fake-ip-range: 198.18.0.1/16 # Fake IP 地址池 (CIDR 形式)
   # use-hosts: true # 查询 hosts 并返回 IP 记录
-
   # 在以下列表的域名将不会被解析为 fake ip，这些域名相关的解析请求将会返回它们真实的 IP 地址
   fake-ip-filter:
     # 以下域名列表参考自 vernesong/OpenClash 项目，并由 Hackl0us 整理补充
@@ -165,22 +134,22 @@ dns:
     ## STUN Server
     - 'stun.*.*'
     - 'stun.*.*.*'
-
-
     ## Bilibili CDN
     - '*.mcdn.bilivideo.cn'
-
   # 支持 UDP / TCP / DoT / DoH 协议的 DNS 服务，可以指明具体的连接端口号。
   # 所有 DNS 请求将会直接发送到服务器，不经过任何代理。
   # Clash 会使用最先获得的解析记录回复 DNS 请求
   nameserver:
-    - https://doh.pub/dns-query
-    - https://dns.alidns.com/dns-query
-
+    # - https://doh.pub/dns-query
+    # - https://dns.alidns.com/dns-query
+    - 114.114.114.114
+    - 223.5.5.5
+    - tls://8.8.8.8:853
   # 当 fallback 参数被配置时, DNS 请求将同时发送至上方 nameserver 列表和下方 fallback 列表中配置的所有 DNS 服务器.
   # 当解析得到的 IP 地址的地理位置不是 CN 时，clash 将会选用 fallback 中 DNS 服务器的解析结果。
-  # fallback:
+  fallback:
   #   - https://dns.google/dns-query
+    - tls://8.8.8.8:853
 
   # 如果使用 nameserver 列表中的服务器解析的 IP 地址在下方列表中的子网中，则它们被认为是无效的，
   # Clash 会选用 fallback 列表中配置 DNS 服务器解析得到的结果。
@@ -216,8 +185,8 @@ proxies:
     type: http
     server: video.124.world
     port: 443
-    username: rot
-    password: lsjdkfljsdfl
+    username: malzahar
+    password: xxxxx
     tls: true # https
     skip-cert-verify: true
 
@@ -265,44 +234,43 @@ rules:
   ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
 
   # Apple
-  - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
-  - DOMAIN,safebrowsing.googleapis.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
-  - DOMAIN,developer.apple.com,Proxy
-  - DOMAIN-SUFFIX,digicert.com,Proxy
-  - DOMAIN,ocsp.apple.com,Proxy
-  - DOMAIN,ocsp.comodoca.com,Proxy
-  - DOMAIN,ocsp.usertrust.com,Proxy
-  - DOMAIN,ocsp.sectigo.com,Proxy
-  - DOMAIN,ocsp.verisign.net,Proxy
-  - DOMAIN-SUFFIX,apple-dns.net,Proxy
-  - DOMAIN,testflight.apple.com,Proxy
-  - DOMAIN,sandbox.itunes.apple.com,Proxy
-  - DOMAIN,itunes.apple.com,Proxy
-  - DOMAIN-SUFFIX,apps.apple.com,Proxy
-  - DOMAIN-SUFFIX,blobstore.apple.com,Proxy
-  - DOMAIN,cvws.icloud-content.com,Proxy
-  - DOMAIN-SUFFIX,mzstatic.com,DIRECT
-  - DOMAIN-SUFFIX,itunes.apple.com,DIRECT
-  - DOMAIN-SUFFIX,icloud.com,DIRECT
-  - DOMAIN-SUFFIX,icloud-content.com,DIRECT
-  - DOMAIN-SUFFIX,me.com,DIRECT
-  - DOMAIN-SUFFIX,aaplimg.com,DIRECT
-  - DOMAIN-SUFFIX,cdn20.com,DIRECT
-  - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
-  - DOMAIN-SUFFIX,akadns.net,DIRECT
-  - DOMAIN-SUFFIX,akamaiedge.net,DIRECT
-  - DOMAIN-SUFFIX,edgekey.net,DIRECT
-  - DOMAIN-SUFFIX,mwcloudcdn.com,DIRECT
-  - DOMAIN-SUFFIX,mwcname.com,DIRECT
-  - DOMAIN-SUFFIX,apple.com,DIRECT
-  - DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT
-  - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
-  # - DOMAIN,e.crashlytics.com,REJECT //注释此选项有助于大多数App开发者分析崩溃信息；如果您拒绝一切崩溃数据统计、搜集，请取消 # 注释。
+  # - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
+  # - DOMAIN,safebrowsing.googleapis.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
+  # - DOMAIN,developer.apple.com,Proxy
+  # - DOMAIN-SUFFIX,digicert.com,Proxy
+  # - DOMAIN,ocsp.apple.com,Proxy
+  # - DOMAIN,ocsp.comodoca.com,Proxy
+  # - DOMAIN,ocsp.usertrust.com,Proxy
+  # - DOMAIN,ocsp.sectigo.com,Proxy
+  # - DOMAIN,ocsp.verisign.net,Proxy
+  # - DOMAIN-SUFFIX,apple-dns.net,Proxy
+  # - DOMAIN,testflight.apple.com,Proxy
+  # - DOMAIN,sandbox.itunes.apple.com,Proxy
+  # - DOMAIN,itunes.apple.com,Proxy
+  # - DOMAIN-SUFFIX,apps.apple.com,Proxy
+  # - DOMAIN-SUFFIX,blobstore.apple.com,Proxy
+  # - DOMAIN,cvws.icloud-content.com,Proxy
+  # - DOMAIN-SUFFIX,mzstatic.com,DIRECT
+  # - DOMAIN-SUFFIX,itunes.apple.com,DIRECT
+  # - DOMAIN-SUFFIX,icloud.com,DIRECT
+  # - DOMAIN-SUFFIX,icloud-content.com,DIRECT
+  # - DOMAIN-SUFFIX,me.com,DIRECT
+  # - DOMAIN-SUFFIX,aaplimg.com,DIRECT
+  # - DOMAIN-SUFFIX,cdn20.com,DIRECT
+  # - DOMAIN-SUFFIX,cdn-apple.com,DIRECT
+  # - DOMAIN-SUFFIX,akadns.net,DIRECT
+  # - DOMAIN-SUFFIX,akamaiedge.net,DIRECT
+  # - DOMAIN-SUFFIX,edgekey.net,DIRECT
+  # - DOMAIN-SUFFIX,mwcloudcdn.com,DIRECT
+  # - DOMAIN-SUFFIX,mwcname.com,DIRECT
+  # - DOMAIN-SUFFIX,apple.com,DIRECT
+  # - DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT
+  # - DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
+  # - DOMAIN,e.crashlytics.com,REJECT # 注释此选项有助于大多数App开发者分析崩溃信息；如果您拒绝一切崩溃数据统计、搜集，请取消 # 注释。
 
   # 国内网站
   - DOMAIN-SUFFIX,cn,DIRECT
   - DOMAIN-KEYWORD,-cn,DIRECT
-
   - DOMAIN-SUFFIX,126.com,DIRECT
   - DOMAIN-SUFFIX,126.net,DIRECT
   - DOMAIN-SUFFIX,127.net,DIRECT
@@ -773,4 +741,5 @@ rules:
   # 最终规则
   - GEOIP,CN,DIRECT
   - MATCH,Proxy
+  # - MATCH,DIRECT
 

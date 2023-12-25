@@ -5,7 +5,7 @@ require("core.keymaps")
 
 -- 插件
 require("plugins.lualine")
-require("plugins.nvim-tree")
+require("plugins.neo-tree")
 require("plugins.treesitter")
 require("plugins.bufferline")
 require("plugins.gitsigns")

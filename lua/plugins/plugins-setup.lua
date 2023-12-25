@@ -38,11 +38,15 @@ return require('packer').startup(function(use)
         'nvim-lualine/lualine.nvim',                              -- 状态栏
         requires = { 'kyazdani42/nvim-web-devicons', opt = true } -- 状态栏图标
     }
+
     use {
-        'nvim-tree/nvim-tree.lua',         -- 文件树
+        "nvim-neo-tree/neo-tree.nvim",
+        branch = "v3.x",
         requires = {
-            'nvim-tree/nvim-web-devicons', -- 文件树图标
-        },
+            "nvim-lua/plenary.nvim",
+            "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+            "MunifTanjim/nui.nvim",
+        }
     }
     use "christoomey/vim-tmux-navigator"  -- 使用ctrl-hjkl来定位窗口
     use "nvim-treesitter/nvim-treesitter" -- 语法高亮
