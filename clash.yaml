@@ -123,7 +123,7 @@ dns:
     - '+.srv.nintendo.net'
     ## Sony PlayStation
     - '+.stun.playstation.net'
-    ## Microsoft Xbox
+    ## Proxy Xbox
     - 'xbox.*.microsoft.com'
     - '+.xboxlive.com'
     # === Other ===
@@ -725,6 +725,28 @@ rules:
   - IP-CIDR6,2001:b28:f23d::/48,Proxy
   - IP-CIDR6,2001:b28:f23f::/48,Proxy
 
+  # chatgpt
+  - DOMAIN-SUFFIX,openai.com,Proxy
+  - DOMAIN-SUFFIX,auth0.com,Proxy
+  - DOMAIN-SUFFIX,bing.com,Proxy
+  - DOMAIN-SUFFIX,live.com,Proxy
+
+  # Bing
+  - DOMAIN-SUFFIX,msxiaobing.com,Proxy
+  - DOMAIN-SUFFIX,bing.com,Proxy
+  - DOMAIN-SUFFIX,bing123.com,Proxy
+  - DOMAIN-SUFFIX,bing135.com,Proxy
+  - DOMAIN-SUFFIX,bing4.com,Proxy
+  - DOMAIN-SUFFIX,bing.com.bo,Proxy
+  - DOMAIN-SUFFIX,bing.com.co,Proxy
+  - DOMAIN-SUFFIX,bing.com.cy,Proxy
+  - DOMAIN-SUFFIX,bing.com.gt,Proxy
+  - DOMAIN-SUFFIX,bing.jp,Proxy
+  - DOMAIN-SUFFIX,bing.cn,Proxy
+  - DOMAIN-SUFFIX,bing.net,Proxy
+  - DOMAIN-SUFFIX,bingapis.com,Proxy
+  - DOMAIN-SUFFIX,bingforbusiness.com,Proxy
+
   # LAN
   - DOMAIN,injections.adguard.org,DIRECT
   - DOMAIN,local.adguard.org,DIRECT
@@ -740,6 +762,6 @@ rules:
 
   # 最终规则
   - GEOIP,CN,DIRECT
-  - MATCH,Proxy
-  # - MATCH,DIRECT
+  # - MATCH,Proxy
+  - MATCH,DIRECT
 

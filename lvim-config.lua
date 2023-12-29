@@ -57,6 +57,14 @@ lvim.plugins = {
         end,
     },
 
+    -- {
+    --     "phaazon/hop.nvim",
+    --     branch = 'v2',
+    --     config = function()
+    --         require'hop'.setup {}
+    --     end,
+    -- },
+
     {
         "folke/todo-comments.nvim",
         event = "BufRead",
