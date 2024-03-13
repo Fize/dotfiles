@@ -10,8 +10,8 @@ vim.opt.tabstop = 4    -- insert 2 spaces for a tab
 
 -- lvim.colorscheme = 'vscode'
 -- lvim.colorscheme = 'onenord'
--- lvim.colorscheme = 'tokyonight'
-lvim.colorscheme = 'sonokai'
+lvim.colorscheme = 'tokyonight'
+-- lvim.colorscheme = 'sonokai'
 
 -- default, lvim, none
 lvim.builtin.lualine.style = "lvim"
