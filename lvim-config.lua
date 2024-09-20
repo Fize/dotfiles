@@ -9,8 +9,8 @@ vim.opt.shiftwidth = 4 -- the number of spaces inserted for each indentation
 vim.opt.tabstop = 4    -- insert 2 spaces for a tab
 
 -- lvim.colorscheme = 'vscode'
--- lvim.colorscheme = 'onenord'
-lvim.colorscheme = 'tokyonight'
+lvim.colorscheme = 'onenord'
+-- lvim.colorscheme = 'tokyonight'
 -- lvim.colorscheme = 'sonokai'
 
 -- default, lvim, none
@@ -35,12 +35,14 @@ lvim.plugins = {
         },
     },
 
+    -- golang plugin
     { 'fatih/vim-go' },
-
+    -- theme
     { 'Mofiqul/vscode.nvim' },
     { 'rmehri01/onenord.nvim' },
-    { 'mg979/vim-visual-multi' },
     { 'sainnhe/sonokai' },
+
+    { 'mg979/vim-visual-multi' },
     { "lfv89/vim-interestingwords" },
 
     { "tpope/vim-repeat" },
@@ -56,14 +58,6 @@ lvim.plugins = {
             require("leap").add_default_mappings()
         end,
     },
-
-    -- {
-    --     "phaazon/hop.nvim",
-    --     branch = 'v2',
-    --     config = function()
-    --         require'hop'.setup {}
-    --     end,
-    -- },
 
     {
         "folke/todo-comments.nvim",
@@ -87,6 +81,21 @@ lvim.plugins = {
         config = function()
             require("copilot_cmp").setup()
         end
+    },
+
+    {
+        "CopilotC-Nvim/CopilotChat.nvim",
+        branch = "canary",
+        dependencies = {
+          { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+          { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+        },
+        build = "make tiktoken", -- Only on MacOS or Linux
+        opts = {
+          debug = true, -- Enable debugging
+          -- See Configuration section for rest
+        },
+        -- See Commands section for default commands if you want to lazy load on them
     },
 
     -- instead of using the default installer
@@ -116,6 +125,8 @@ lvim.keys.normal_mode["<leader>kk"] = ":call UncolorAllWords()<cr>"
 
 -- 取消高亮
 lvim.keys.normal_mode["<leader>h"] = ":nohl<CR>"
+
+lvim.keys.normal_mode["<leader>c"] = ":CopilotChatToggle"
 
 local fterm = require("FTerm")
 
