@@ -9,8 +9,8 @@ vim.opt.shiftwidth = 4 -- the number of spaces inserted for each indentation
 vim.opt.tabstop = 4    -- insert 2 spaces for a tab
 
 -- lvim.colorscheme = 'vscode'
-lvim.colorscheme = 'onenord'
--- lvim.colorscheme = 'tokyonight'
+-- lvim.colorscheme = 'onenord'
+lvim.colorscheme = 'tokyonight'
 -- lvim.colorscheme = 'sonokai'
 
 -- default, lvim, none
@@ -85,7 +85,7 @@ lvim.plugins = {
 
     {
         "CopilotC-Nvim/CopilotChat.nvim",
-        branch = "canary",
+        branch = "main",
         dependencies = {
           { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
           { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
@@ -126,7 +126,7 @@ lvim.keys.normal_mode["<leader>kk"] = ":call UncolorAllWords()<cr>"
 -- 取消高亮
 lvim.keys.normal_mode["<leader>h"] = ":nohl<CR>"
 
-lvim.keys.normal_mode["<leader>c"] = ":CopilotChatToggle"
+lvim.keys.normal_mode["<leader>ai"] = ":CopilotChatToggle<CR>"
 
 local fterm = require("FTerm")
 

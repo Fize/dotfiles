@@ -71,7 +71,7 @@ install_package() {
         curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
         echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 		sudo apt update -y
-		sudo apt install -y tmux python3-dev python2-dev python3-pip autojump silversearcher-ag fd-find nodejs exa shfmt
+		sudo apt install -y tmux python3-dev python2-dev python3-pip autojump silversearcher-ag fd-find nodejs exa shfmt ripgrep
         cd ~
         git clone https://github.com/neovim/neovim
         cd neovim
