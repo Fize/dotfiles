@@ -2,14 +2,7 @@
 
 dotfile and configuration for myself.
 
-## Fonts
-
-- IntelOne Mono(this my main font)
-- Other Nerd Fonts
-
 ## Usage
-
-support MacOS and Ubuntu
 
 ### Requirment
 
@@ -19,7 +12,7 @@ support MacOS and Ubuntu
 
 #### MacOS
 
-- iterm2
+- chostty
 
 #### Windows
 
