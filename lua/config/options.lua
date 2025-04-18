@@ -6,6 +6,11 @@ vim.g.lazyvim_prettier_needs_config = false
 
 local opt = vim.opt
 
+opt.tabstop = 4 -- number of visual spaces per TAB
+opt.softtabstop = 4 -- number of spacesin tab when editing
+opt.shiftwidth = 4 -- insert 4 spaces on a tab
+opt.expandtab = true -- tabs are spaces, mainly because of python
+
 opt.clipboard = "unnamedplus" -- 使用系统剪贴板
 opt.completeopt = { "menu", "menuone", "noselect" } -- 显示补全菜单，默认不选中
 opt.mouse = "a" -- 允许使用鼠标
