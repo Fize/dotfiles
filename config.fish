@@ -3,8 +3,8 @@ if status is-interactive
     set -gx DOCKER_BUILDKIT 1
     set -gx GO111MODULE on
     set -gx PATH "$HOME/go/bin"
-    set -gx KUBE_EDITOR "lvim"
-    [ -f /opt/homebrew/share/autojump/autojump.fish ]; and source /opt/homebrew/share/autojump/autojump.fish
+    set -gx KUBE_EDITOR "nvim"
+    # [ -f /opt/homebrew/share/autojump/autojump.fish ]; and source /opt/homebrew/share/autojump/autojump.fish
 
     alias k="kubectl"
     alias h="hexctl"
