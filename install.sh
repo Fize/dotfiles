@@ -69,27 +69,35 @@ check_system() {
 
 install_core_package() {
     if [[ ${OS} == "Darwin" ]]; then
-        brew install curl unzip fish tmux atuin
+        brew install curl unzip fish tmux eza ccat
     else
         sudo apt update -y
         sudo apt upgrade -y
         sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake fish tmux
-        
-        # Install Atuin
-        bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
     fi
 }
 
 install_package() {
     if [[ ${OS} == "Darwin" ]]; then
-        brew install golang fd-find the_silver_searcher node ripgrep shfmt
+        brew install golang fd-find the_silver_searcher node ripgrep shfmt atuin
         brew install --HEAD neovim
     else
+		# Install Atuin
+        bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
+
         sudo apt update -y
+		# install nodejs packages
         curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
         echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+		# install eza packages
+		wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+		echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+		sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
+
         sudo apt update -y
-        sudo apt install -y python3-dev python2-dev python3-pip autojump silversearcher-ag fd-find nodejs shfmt ripgrep
+        sudo apt install -y python3-dev python3-pip silversearcher-ag fd-find nodejs shfmt ripgrep eza
+		sudo mkdir -p /etc/apt/keyrings
+
         cd ~
         git clone https://github.com/neovim/neovim
         cd neovim
@@ -117,13 +125,15 @@ setup_fish() {
     # Create symlink to config.fish
     ln -s ${WORKDIR}/config.fish ~/.config/fish/config.fish
 
-    # Install Fisher (plugin manager for fish)
+    # Install Fisher (plugin manager for fish) using fish shell
     if [[ ! -f ~/.config/fish/functions/fisher.fish ]]; then
-        curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+        fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"
     fi
 
     # Install useful fish plugins
-    fish -c "fisher install autojump"
+	echo "Installing fish plugins..."
+	fish -c "fisher install jethrokuan/z"
+    fish -c "fisher install PatrickF1/fzf.fish"
     fish -c "fisher install edc/bass"
     fish -c "fisher install jhillyerd/plugin-git"
 }
@@ -171,6 +181,23 @@ EOF
     fi
 }
 
+setup_neovim() {
+    echo "Setting up Neovim configuration..."
+    
+    # Create nvim config directory if it doesn't exist
+    mkdir -p ~/.config
+    
+    # Remove existing nvim config if it exists
+    if [[ -L ~/.config/nvim ]]; then
+        rm ~/.config/nvim
+    elif [[ -d ~/.config/nvim ]]; then
+        mv ~/.config/nvim ~/.config/nvim.bak
+    fi
+    
+    # Create symlink
+    ln -s ${WORKDIR} ~/.config/nvim
+}
+
 main() {
     print_prerequisites
     check_system
@@ -192,6 +219,8 @@ main() {
     setup_tmux
     # Setup atuin
     setup_atuin
+    # Setup neovim configuration
+    setup_neovim
     
     echo "============================================================"
     echo "                   Final Configuration                       "
@@ -208,6 +237,18 @@ main() {
         fi
         printf "\n✓ Fish shell has been set as your default shell.\n"
         printf "Please log out and back in for changes to take effect.\n"
+    fi
+
+    # Only show ccat installation prompt on Linux
+    if [[ ${OS} != "Darwin" ]]; then
+        echo "============================================================"
+        echo "                   Optional Tools                           "
+        echo "============================================================"
+        echo "To install ccat (Colorizing cat), please run:"
+        echo "$ go get -u github.com/owenthereal/ccat"
+        echo ""
+        echo "Press Enter to continue..."
+        read
     fi
     
     echo "============================================================"

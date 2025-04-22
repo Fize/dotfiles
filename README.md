@@ -1,23 +1,24 @@
 # dotfiles
 
-dotfile and configuration for myself.
+dotfile and configuration for my development environment.
 
-## Usage
+## Requirements
 
-### Requirment
+- git
 
-- zsh
-- oh-my-zsh
+### Features
+
+- fish
+- neovim
 - tmux
 
-#### MacOS
+### Linux And MacOS
 
 - chostty
 
-#### Windows
+### Windows
 
 - wsl2
-- wsl ubuntu
 - Windows Terminal
 
 ### Install
@@ -25,3 +26,14 @@ dotfile and configuration for myself.
 ```
  $ ./install.sh
 ```
+
+### Neovim Plugins
+
+use `:LazyExtra` to install the plugins
+
+- copilot
+- copilot-chat
+- aerial
+- neo-tree
+- telescope
+- prettier
