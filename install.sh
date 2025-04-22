@@ -73,13 +73,13 @@ install_core_package() {
     else
         sudo apt update -y
         sudo apt upgrade -y
-        sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake fish tmux
+        sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake fish tmux luajit
     fi
 }
 
 install_package() {
     if [[ ${OS} == "Darwin" ]]; then
-        brew install golang fd-find the_silver_searcher node ripgrep shfmt atuin
+        brew install golang fd-find the_silver_searcher node ripgrep shfmt atuin luajit
         brew install --HEAD neovim
     else
 		# Install Atuin

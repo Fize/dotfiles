@@ -37,3 +37,4 @@ use `:LazyExtra` to install the plugins
 - neo-tree
 - telescope
 - prettier
+- leap
