@@ -33,7 +33,7 @@ check_system() {
     echo "============================================================"
     echo "                   Checking System Type                      "
     echo "============================================================"
-    
+
     local system=$(uname)
     if [[ ${system} != "Linux" && ${system} != "Darwin" ]]; then
         printf "Error: Unsupported system type: %s\n" ${system}
@@ -69,11 +69,11 @@ check_system() {
 
 install_core_package() {
     if [[ ${OS} == "Darwin" ]]; then
-        brew install curl unzip fish tmux eza ccat
+        brew install curl unzip fish tmux ag eza ccat
     else
         sudo apt update -y
         sudo apt upgrade -y
-        sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake fish tmux luajit
+        sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake fish tmux luajit silversearcher-ag
     fi
 }
 
@@ -82,21 +82,21 @@ install_package() {
         brew install golang fd-find the_silver_searcher node ripgrep shfmt atuin luajit
         brew install --HEAD neovim
     else
-		# Install Atuin
+        # Install Atuin
         bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
 
         sudo apt update -y
-		# install nodejs packages
+        # install nodejs packages
         curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
         echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-		# install eza packages
-		wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-		echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-		sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
+        # install eza packages
+        wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+        sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
 
         sudo apt update -y
         sudo apt install -y python3-dev python3-pip silversearcher-ag fd-find nodejs shfmt ripgrep eza
-		sudo mkdir -p /etc/apt/keyrings
+        sudo mkdir -p /etc/apt/keyrings
 
         cd ~
         git clone https://github.com/neovim/neovim
@@ -131,8 +131,8 @@ setup_fish() {
     fi
 
     # Install useful fish plugins
-	echo "Installing fish plugins..."
-	fish -c "fisher install jethrokuan/z"
+    echo "Installing fish plugins..."
+    fish -c "fisher install jethrokuan/z"
     fish -c "fisher install PatrickF1/fzf.fish"
     fish -c "fisher install edc/bass"
     fish -c "fisher install jhillyerd/plugin-git"
@@ -162,7 +162,7 @@ setup_atuin() {
 
     # Configure atuin
     mkdir -p ~/.config/atuin
-    cat > ~/.config/atuin/config.toml << EOF
+    cat >~/.config/atuin/config.toml <<EOF
 # Atuin configuration
 auto_sync = false
 sync_address = ""
@@ -176,24 +176,24 @@ EOF
     if [[ -d ~/.config/fish ]]; then
         # Add atuin integration to config.fish if not already present
         if ! grep -q "atuin init fish" ~/.config/fish/config.fish; then
-            echo 'status --is-interactive; and atuin init fish | source' >> ~/.config/fish/config.fish
+            echo 'status --is-interactive; and atuin init fish | source' >>~/.config/fish/config.fish
         fi
     fi
 }
 
 setup_neovim() {
     echo "Setting up Neovim configuration..."
-    
+
     # Create nvim config directory if it doesn't exist
     mkdir -p ~/.config
-    
+
     # Remove existing nvim config if it exists
     if [[ -L ~/.config/nvim ]]; then
         rm ~/.config/nvim
     elif [[ -d ~/.config/nvim ]]; then
         mv ~/.config/nvim ~/.config/nvim.bak
     fi
-    
+
     # Create symlink
     ln -s ${WORKDIR} ~/.config/nvim
 }
@@ -201,18 +201,18 @@ setup_neovim() {
 main() {
     print_prerequisites
     check_system
-    
+
     echo "============================================================"
     echo "                Starting Installation                        "
     echo "============================================================"
-    
+
     install_core_package
     install_package
-    
+
     echo "============================================================"
     echo "                Configuring Environment                      "
     echo "============================================================"
-    
+
     # Setup fish shell
     setup_fish
     # Setup tmux configuration
@@ -221,11 +221,11 @@ main() {
     setup_atuin
     # Setup neovim configuration
     setup_neovim
-    
+
     echo "============================================================"
     echo "                   Final Configuration                       "
     echo "============================================================"
-    
+
     # Set fish as default shell
     printf "\nWould you like to set fish as your default shell? [y/N] "
     read -r response
@@ -250,7 +250,7 @@ main() {
         echo "Press Enter to continue..."
         read
     fi
-    
+
     echo "============================================================"
     echo "                Installation Complete!                       "
     echo "============================================================"
