@@ -14,7 +14,7 @@ dotfile and configuration for my development environment.
 
 ### Linux And MacOS
 
-- chostty
+- ghostty
 
 ### Windows
 
@@ -38,3 +38,4 @@ use `:LazyExtra` to install the plugins
 - telescope
 - prettier
 - leap
+
