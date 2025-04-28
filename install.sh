@@ -69,7 +69,7 @@ check_system() {
 
 install_core_package() {
     if [[ ${OS} == "Darwin" ]]; then
-        brew install curl unzip fish tmux ag eza ccat
+        brew install curl unzip fish tmux ag eza ccat bat fd
     else
         sudo apt update -y
         sudo apt upgrade -y
@@ -79,7 +79,7 @@ install_core_package() {
 
 install_package() {
     if [[ ${OS} == "Darwin" ]]; then
-        brew install golang fd-find the_silver_searcher node ripgrep shfmt atuin luajit
+        brew install go fd the_silver_searcher node ripgrep shfmt atuin luajit
         brew install --HEAD neovim
     else
         # Install Atuin
