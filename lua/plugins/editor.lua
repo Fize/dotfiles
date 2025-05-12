@@ -3,7 +3,7 @@ return {
   { "junegunn/limelight.vim" },
   { "vim-pandoc/vim-pandoc-syntax" },
   { "edluffy/hologram.nvim" },
-  { "numToStr/FTerm.nvim" },
+  -- { "numToStr/FTerm.nvim" },
   {
     "windwp/nvim-autopairs",
     event = "InsertEnter",

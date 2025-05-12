@@ -24,7 +24,7 @@ dotfile and configuration for my development environment.
 ### Install
 
 ```
- $ ./install.sh
+ ./install.sh
 ```
 
 ### Neovim Plugins
@@ -32,10 +32,9 @@ dotfile and configuration for my development environment.
 use `:LazyExtra` to install the plugins
 
 - copilot
-- copilot-chat
+- gitui
 - aerial
 - neo-tree
 - telescope
 - prettier
 - leap
-
