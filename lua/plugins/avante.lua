@@ -96,7 +96,8 @@ return {
       providers = {
         copilot = {
           endpoint = "https://api.githubcopilot.com",
-          model = "claude-3.7-sonnet", -- your desired model (or use gpt-4o, etc.)
+          model = "claude-sonnet-4", -- your desired model (or use gpt-4o, etc.)
+          -- model = "claude-3.7-sonnet", -- your desired model (or use gpt-4o, etc.)
           extra_request_body = {
             timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
             temperature = 0,
