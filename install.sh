@@ -16,16 +16,18 @@ print_prerequisites() {
         echo "2. Homebrew"
         echo "   Install with: /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
     else
-        echo "For Debian/Ubuntu Linux:"
+        echo "For Debian/Ubuntu/Fedora Linux:"
         echo "1. Git"
-        echo "   Install with: sudo apt update && sudo apt install -y git"
+        echo "   Install with:"
+        echo "   - Ubuntu/Debian: sudo apt update && sudo apt install -y git"
+        echo "   - Fedora: sudo dnf install -y git"
     fi
     echo ""
     echo "Press Enter to continue or Ctrl+C to exit..."
     read
 }
 
-export support_release=("Ubuntu" "Debian")
+export support_release=("Ubuntu" "Debian" "Fedora")
 export WORKDIR=$(pwd)
 export NODE_MAJOR=20
 
@@ -69,11 +71,14 @@ check_system() {
 
 install_core_package() {
     if [[ ${OS} == "Darwin" ]]; then
-        brew install curl unzip fish tmux ag eza ccat bat fd
+        brew install curl unzip zsh tmux ag eza ccat bat fd
+    elif [[ ${OS} == "fedora" ]]; then
+        sudo dnf update -y
+        sudo dnf install -y curl unzip zsh tmux the_silver_searcher eza bat fd-find
     else
         sudo apt update -y
         sudo apt upgrade -y
-        sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake fish tmux luajit silversearcher-ag
+        sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake zsh tmux luajit silversearcher-ag
     fi
 }
 
@@ -81,6 +86,22 @@ install_package() {
     if [[ ${OS} == "Darwin" ]]; then
         brew install go fd the_silver_searcher node ripgrep shfmt atuin luajit
         brew install --HEAD neovim
+    elif [[ ${OS} == "fedora" ]]; then
+        # Install Atuin
+        bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
+
+        # Install packages available in Fedora repos
+        sudo dnf install -y python3-devel python3-pip nodejs npm ripgrep shfmt golang
+
+        # Install Neovim from source for latest version
+        cd ~
+        git clone https://github.com/neovim/neovim
+        cd neovim
+        git checkout stable
+        make CMAKE_BUILD_TYPE=RelWithDebInfo
+        sudo make install
+        cd $WORKDIR
+        sudo ln -sf /usr/local/bin/nvim /usr/bin/nvim
     else
         # Install Atuin
         bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
@@ -109,33 +130,54 @@ install_package() {
     fi
 }
 
-setup_fish() {
-    # Create fish config directory if it doesn't exist
-    mkdir -p ~/.config/fish
-
-    # Handle existing config.fish
-    if [[ -L ~/.config/fish/config.fish ]]; then
-        # Remove existing symlink
-        rm ~/.config/fish/config.fish
-    elif [[ -f ~/.config/fish/config.fish ]]; then
-        # Backup existing regular file
-        mv ~/.config/fish/config.fish ~/.config/fish/config.fish.bak
+setup_zsh() {
+    # Install Oh My Zsh if not exists
+    if [[ ! -d ~/.oh-my-zsh ]]; then
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended
     fi
 
-    # Create symlink to config.fish
-    ln -s ${WORKDIR}/config.fish ~/.config/fish/config.fish
-
-    # Install Fisher (plugin manager for fish) using fish shell
-    if [[ ! -f ~/.config/fish/functions/fisher.fish ]]; then
-        fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"
+    # Install useful zsh plugins first
+    echo "Installing zsh plugins..."
+    
+    # Install zsh-autosuggestions
+    if [[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]]; then
+        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    fi
+    
+    # Install zsh-syntax-highlighting
+    if [[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]]; then
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
     fi
 
-    # Install useful fish plugins
-    echo "Installing fish plugins..."
-    fish -c "fisher install jethrokuan/z"
-    fish -c "fisher install PatrickF1/fzf.fish"
-    fish -c "fisher install edc/bass"
-    fish -c "fisher install jhillyerd/plugin-git"
+    # Update plugins in .zshrc
+    if [[ -f ~/.zshrc ]]; then
+        # Update plugins list to include our custom plugins
+        sed -i 's/plugins=(git)/plugins=(\n    git\n    z\n    fzf\n    docker\n    kubectl\n    golang\n    node\n    npm\n    yarn\n    zsh-autosuggestions\n    zsh-syntax-highlighting\n)/' ~/.zshrc
+        
+        # Add our custom environment variables and aliases at the end of .zshrc
+        cat >> ~/.zshrc << 'EOF'
+
+# Custom environment variables
+export HOMEBREW_NO_AUTO_UPDATE=true
+export DOCKER_BUILDKIT=1
+export GO111MODULE=on
+export KUBE_EDITOR="nvim"
+export PATH="$PATH:/usr/local/bin:$HOME/.local/bin:$HOME/go/bin:$HOME/.atuin/bin"
+
+# Custom aliases
+alias k="kubectl"
+alias h="hexctl"
+alias c="ccat"
+alias ls="eza"
+alias ghcs="gh copilot suggest"
+alias ghce="gh copilot explain"
+
+# Atuin integration
+if command -v atuin &> /dev/null; then
+    eval "$(atuin init zsh)"
+fi
+EOF
+    fi
 }
 
 setup_tmux() {
@@ -172,13 +214,8 @@ show_help = true
 max_preview_height = 8
 EOF
 
-    # Setup for fish shell
-    if [[ -d ~/.config/fish ]]; then
-        # Add atuin integration to config.fish if not already present
-        if ! grep -q "atuin init fish" ~/.config/fish/config.fish; then
-            echo 'status --is-interactive; and atuin init fish | source' >>~/.config/fish/config.fish
-        fi
-    fi
+    # Note: Atuin integration is already handled in the zsh configuration
+    echo "Atuin configured. Integration with zsh is already set up in .zshrc"
 }
 
 setup_neovim() {
@@ -213,8 +250,8 @@ main() {
     echo "                Configuring Environment                      "
     echo "============================================================"
 
-    # Setup fish shell
-    setup_fish
+    # Setup zsh shell
+    setup_zsh
     # Setup tmux configuration
     setup_tmux
     # Setup atuin
@@ -226,16 +263,18 @@ main() {
     echo "                   Final Configuration                       "
     echo "============================================================"
 
-    # Set fish as default shell
-    printf "\nWould you like to set fish as your default shell? [y/N] "
+    # Set zsh as default shell
+    printf "\nWould you like to set zsh as your default shell? [y/N] "
     read -r response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]; then
-        if [[ -f /usr/local/bin/fish ]]; then
-            chsh -s /usr/local/bin/fish
-        elif [[ -f /usr/bin/fish ]]; then
-            chsh -s /usr/bin/fish
+        if [[ -f /usr/local/bin/zsh ]]; then
+            chsh -s /usr/local/bin/zsh
+        elif [[ -f /usr/bin/zsh ]]; then
+            chsh -s /usr/bin/zsh
+        elif [[ -f /bin/zsh ]]; then
+            chsh -s /bin/zsh
         fi
-        printf "\n✓ Fish shell has been set as your default shell.\n"
+        printf "\n✓ Zsh shell has been set as your default shell.\n"
         printf "Please log out and back in for changes to take effect.\n"
     fi
 

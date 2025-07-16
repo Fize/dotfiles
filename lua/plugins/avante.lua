@@ -97,13 +97,18 @@ return {
         copilot = {
           endpoint = "https://api.githubcopilot.com",
           model = "claude-sonnet-4", -- your desired model (or use gpt-4o, etc.)
-          -- model = "claude-3.7-sonnet", -- your desired model (or use gpt-4o, etc.)
           extra_request_body = {
             timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
             temperature = 0,
             max_tokens = 100000000, -- Increase this to include reasoning tokens (for reasoning models)
             --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
           },
+        },
+        deepseek = {
+          __inherited_from = "openai",
+          api_key_name = "DEEPSEEK_API_KEY",
+          endpoint = "https://api.deepseek.com",
+          model = "deepseek-coder",
         },
       },
     },

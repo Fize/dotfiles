@@ -8,9 +8,14 @@ dotfile and configuration for my development environment.
 
 ### Features
 
-- fish
+- zsh (with Oh My Zsh)
 - neovim
 - tmux
+
+### Supported Systems
+
+- **Linux**: Ubuntu, Debian, Fedora
+- **macOS**: Darwin
 
 ### Linux And MacOS
 
