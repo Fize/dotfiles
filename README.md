@@ -45,3 +45,4 @@ use `:LazyExtra` to install the plugins
 - leap
 - fzf
 - toggleterm
+- blink

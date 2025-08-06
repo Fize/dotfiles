@@ -3,7 +3,7 @@
 -- Add any additional options here
 
 vim.g.lazyvim_prettier_needs_config = false
-vim.g.lazyvim_blink_main = false
+vim.g.lazyvim_blink_main = true
 
 local opt = vim.opt
 
@@ -13,7 +13,7 @@ opt.shiftwidth = 4 -- insert 4 spaces on a tab
 opt.expandtab = true -- tabs are spaces, mainly because of python
 
 opt.clipboard = "unnamedplus" -- 使用系统剪贴板
-opt.completeopt = { "menu", "menuone", "noselect" } -- 显示补全菜单，默认不选中
+opt.completeopt = { "menu", "menuone", "noselect", "preview" } -- 显示补全菜单，默认不选中
 opt.mouse = "a" -- 允许使用鼠标
 opt.syntax = "yes" -- 语法
 opt.showcmd = false
