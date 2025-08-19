@@ -46,3 +46,4 @@ use `:LazyExtra` to install the plugins
 - fzf
 - toggleterm
 - blink
+- markdown-preview
