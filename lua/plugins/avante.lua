@@ -251,10 +251,46 @@ return {
       {
         -- Make sure to set this up properly if you have lazy=true
         "MeanderingProgrammer/render-markdown.nvim",
+        -- opts = {
+        --   file_types = { "markdown", "Avante" },
+        -- },
+        -- ft = { "markdown", "Avante" },
         opts = {
-          file_types = { "markdown", "Avante" },
+          -- code = {
+          --   enabled = true,
+          --   sign = true,
+          --   width = "block",
+          --   right_pad = 1,
+          -- },
+          -- heading = {
+          --   enabled = true,
+          --   sign = true,
+          --   --   icons = {},
+          -- },
+          -- checkbox = {
+          --   enabled = false,
+          -- },
+          file_types = { "markdown", "Avante", "norg", "rmd", "org", "codecompanion" },
         },
-        ft = { "markdown", "Avante" },
+        ft = { "markdown", "Avante", "norg", "rmd", "org", "codecompanion" },
+        config = function(_, opts)
+          require("render-markdown").setup(opts)
+          Snacks.toggle({
+            name = "Render Markdown",
+            completions = { blink = { enabled = true } },
+            get = function()
+              return require("render-markdown.state").enabled
+            end,
+            set = function(enabled)
+              local m = require("render-markdown")
+              if enabled then
+                m.enable()
+              else
+                m.disable()
+              end
+            end,
+          }):map("<leader>um")
+        end,
       },
     },
   },
