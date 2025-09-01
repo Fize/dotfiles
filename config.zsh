@@ -121,12 +121,28 @@ export GOSUMDB=""
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PATH:$HOME/.local/bin:$HOME/go/bin:$HOME/.atuin/bin:/usr/local/go/bin:$HOME/.cargo/bin:$HOME/.nvm/versions/node/v22.15.0/bin/:$PNPM_HOME:${KREW_ROOT:-$HOME/.krew}/bin"
 
-export DEEPSEEK_API_KEY=""
-export TENCENT_DEEPSEEK_API_KEY=""
-export GEMINI_API_KEY=""
-export ANTHROPIC_BASE_URL="https://api.moonshot.cn/anthropic"
-export ANTHROPIC_AUTH_TOKEN=""
-export MOONSHOT_API_KEY=""
+# export DEEPSEEK_API_KEY=""
+# export TENCENT_DEEPSEEK_API_KEY=""
+# export GEMINI_API_KEY=
+
+# Kimi
+# export ANTHROPIC_BASE_URL=https://api.moonshot.cn/anthropic
+# export ANTHROPIC_AUTH_TOKEN=
+# export ANTHROPIC_SMALL_FAST_MODEL=kimi-k2-turbo-preview
+# export ANTHROPIC_MODEL=kimi-k2-0711-preview
+
+# GLM
+# export ANTHROPIC_AUTH_TOKEN=
+# export ANTHROPIC_BASE_URL=https://open.bigmodel.cn/api/anthropic
+# export ANTHROPIC_MODEL="glm-4.5"
+# export ANTHROPIC_SMALL_FAST_MODEL="glm-4.5-air"
+
+# Deepseek
+# export ANTHROPIC_AUTH_TOKEN=
+# export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
+# export API_TIMEOUT_MS=600000
+# export ANTHROPIC_MODEL=deepseek-reasoner
+# export ANTHROPIC_SMALL_FAST_MODEL=deepseek-chat
 
 # Aliases
 alias k="kubectl"
