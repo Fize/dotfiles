@@ -100,6 +100,17 @@ return {
           },
           ["P"] = { "toggle_preview", config = { use_float = false } },
         },
+        width = function()
+          local screen_width = vim.o.columns
+          -- 根据屏幕宽度智能调整比例
+          if screen_width < 120 then
+            return math.floor(screen_width * 0.22) -- 小屏幕用22%
+          elseif screen_width < 160 then
+            return math.floor(screen_width * 0.18) -- 中等屏幕用18%
+          else
+            return math.floor(screen_width * 0.14) -- 大屏幕用14%
+          end
+        end,
       },
       default_component_configs = {
         indent = {
