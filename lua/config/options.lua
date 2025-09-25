@@ -3,7 +3,6 @@
 -- Add any additional options here
 
 vim.g.lazyvim_prettier_needs_config = false
-vim.g.lazyvim_blink_main = true
 
 local opt = vim.opt
 

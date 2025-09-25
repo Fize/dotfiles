@@ -1,5 +1,11 @@
 return {
   {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = { "latex" },
+    },
+  },
+  {
     "mfussenegger/nvim-lint",
     opts = function(_, opts)
       -- 确保opts存在且有一个linters_by_ft表

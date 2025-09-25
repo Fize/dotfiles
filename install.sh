@@ -72,13 +72,14 @@ check_system() {
 install_core_package() {
     if [[ ${OS} == "Darwin" ]]; then
         brew install curl unzip zsh tmux ag eza ccat bat fd
+        brew install --cask latexit
     elif [[ ${OS} == "fedora" ]]; then
         sudo dnf update -y
         sudo dnf install -y curl unzip zsh tmux the_silver_searcher eza bat fd-find
     else
         sudo apt update -y
         sudo apt upgrade -y
-        sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake zsh tmux luajit silversearcher-ag
+        sudo apt install -y software-properties-common curl gnupg ca-certificates ninja-build unzip gettext gcc make gcc g++ cmake zsh tmux luajit silversearcher-ag latex2text
     fi
 }
 
@@ -138,12 +139,12 @@ setup_zsh() {
 
     # Install useful zsh plugins first
     echo "Installing zsh plugins..."
-    
+
     # Install zsh-autosuggestions
     if [[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions ]]; then
         git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
     fi
-    
+
     # Install zsh-syntax-highlighting
     if [[ ! -d ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting ]]; then
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
@@ -153,9 +154,9 @@ setup_zsh() {
     if [[ -f ~/.zshrc ]]; then
         # Update plugins list to include our custom plugins
         sed -i 's/plugins=(git)/plugins=(\n    git\n    z\n    fzf\n    docker\n    kubectl\n    golang\n    node\n    npm\n    yarn\n    zsh-autosuggestions\n    zsh-syntax-highlighting\n)/' ~/.zshrc
-        
+
         # Add our custom environment variables and aliases at the end of .zshrc
-        cat >> ~/.zshrc << 'EOF'
+        cat >>~/.zshrc <<'EOF'
 
 # Custom environment variables
 export HOMEBREW_NO_AUTO_UPDATE=true
