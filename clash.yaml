@@ -327,6 +327,8 @@ rules:
   - DOMAIN-SUFFIX,auth0.com,Proxy
   - DOMAIN-SUFFIX,bing.com,Proxy
   - DOMAIN-SUFFIX,live.com,Proxy
+  - DOMAIN-SUFFIX,chatgpt.com,Proxy
+  - DOMAIN,copilot.microsoft.com,Proxy
 
   # Bing
   - DOMAIN-SUFFIX,msxiaobing.com,Proxy

@@ -103,10 +103,9 @@ return {
         },
         deepseek = {
           __inherited_from = "openai",
-          api_key_name = "TENCENT_DEEPSEEK_API_KEY",
-          endpoint = "https://api.lkeap.cloud.tencent.com/v1",
-          -- model = "deepseek-r1-0528",
-          model = "deepseek-v3-0324",
+          api_key_name = "DEEPSEEK_API_KEY",
+          endpoint = "https://api.deepseek.com",
+          model = "deepseek-chat",
         },
         -- moonshot = {
         --   endpoint = "https://api.moonshot.ai/v1",
@@ -122,6 +121,30 @@ return {
       completion = {
         auto_insert_tab = true,
         cursor_flow = true,
+      },
+      rag_service = { -- RAG Service configuration
+        enabled = true, -- Enables the RAG service
+        host_mount = os.getenv("HOME"), -- Host mount path for the rag service (Docker will mount this path)
+        runner = "docker", -- Runner for the RAG service (can use docker or nix)
+        llm = { -- Language Model (LLM) configuration for RAG service
+          provider = "openai", -- LLM provider
+          endpoint = "https://open.bigmodel.cn/api/paas/v4",
+          -- endpoint = "https://api.githubcopilot.com",
+          api_key = "OPENAI_API_KEY", -- Environment variable name for the LLM API key
+          model = "glm-4.5-flash", -- LLM model name
+          extra = nil, -- Additional configuration options for LLM
+        },
+        embed = { -- Embedding model configuration for RAG service
+          provider = "ollama", -- Embedding provider
+          -- endpoint = "https://api.openai.com/v1", -- Embedding API endpoint
+          endpoint = "http://localhost:11434", -- Embedding API endpoint
+          api_key = "", -- Environment variable name for the embedding API key
+          model = "mxbai-embed-large:latest", -- Embedding model name
+          extra = {
+            embed_batch_size = 10,
+          }, -- Additional configuration options for the embedding model
+        },
+        docker_extra_args = "", -- Extra arguments to pass to the docker command
       },
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`

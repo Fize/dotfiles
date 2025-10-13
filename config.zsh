@@ -122,7 +122,6 @@ export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PATH:$HOME/.local/bin:$HOME/go/bin:$HOME/.atuin/bin:/usr/local/go/bin:$HOME/.cargo/bin:$HOME/.nvm/versions/node/v22.15.0/bin/:$PNPM_HOME:${KREW_ROOT:-$HOME/.krew}/bin"
 
 # export DEEPSEEK_API_KEY=""
-# export TENCENT_DEEPSEEK_API_KEY=""
 # export GEMINI_API_KEY=
 
 # Kimi

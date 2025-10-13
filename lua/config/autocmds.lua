@@ -19,3 +19,12 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.spell = false
   end,
 })
+
+-- Disable autoformat for YAML files to prevent Go template formatting issues
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("yaml_format"),
+  pattern = { "yaml", "yml" },
+  callback = function()
+    vim.b.autoformat = false
+  end,
+})
