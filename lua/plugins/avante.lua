@@ -123,7 +123,7 @@ return {
         cursor_flow = true,
       },
       rag_service = { -- RAG Service configuration
-        enabled = true, -- Enables the RAG service
+        enabled = false, -- Enables the RAG service
         host_mount = os.getenv("HOME"), -- Host mount path for the rag service (Docker will mount this path)
         runner = "docker", -- Runner for the RAG service (can use docker or nix)
         llm = { -- Language Model (LLM) configuration for RAG service
