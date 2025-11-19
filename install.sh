@@ -27,7 +27,7 @@ print_prerequisites() {
     read
 }
 
-export support_release=("Ubuntu" "Debian" "Fedora")
+export support_release=("Ubuntu" "Debian" "Fedora" "tencentos")
 export WORKDIR=$(pwd)
 export NODE_MAJOR=20
 
@@ -73,7 +73,7 @@ install_core_package() {
     if [[ ${OS} == "Darwin" ]]; then
         brew install curl unzip zsh tmux ag eza ccat bat fd
         brew install --cask latexit
-    elif [[ ${OS} == "fedora" ]]; then
+    elif [[ ${OS} == "fedora" || ${OS} == "tencentos" ]]; then
         sudo dnf update -y
         sudo dnf install -y curl unzip zsh tmux the_silver_searcher eza bat fd-find
     else
@@ -87,7 +87,7 @@ install_package() {
     if [[ ${OS} == "Darwin" ]]; then
         brew install go fd the_silver_searcher node ripgrep shfmt atuin luajit
         brew install --HEAD neovim
-    elif [[ ${OS} == "fedora" ]]; then
+    elif [[ ${OS} == "fedora" || ${OS} == "tencentos" ]]; then
         # Install Atuin
         bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
 
