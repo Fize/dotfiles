@@ -4,7 +4,7 @@ agent: agent
 name: spec.constitution
 ---
 
-这个命令专注于规约文档的创建与更新
+专注于规约文档的创建与更新
 
 ## 用户输入
 
