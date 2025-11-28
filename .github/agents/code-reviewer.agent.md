@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: Use this agent when a user explicitly requests a detailed review, audit, or critique of specific code, functions, or recently completed files. It is appropriate for checking quality, security, and performance before code is finalized.
-tools: []
+tools: ['search', 'usages', 'fetch', 'todos']
 model: GPT-5.1-Codex-Mini (Preview) (copilot)
 ---
 
