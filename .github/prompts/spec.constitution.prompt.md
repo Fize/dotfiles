@@ -4,7 +4,7 @@ agent: agent
 name: spec.constitution
 ---
 
-专注于规约文档的创建与更新
+专注于规约文档的创建与更新，**不要做其他事情**
 
 ## 用户输入
 
