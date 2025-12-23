@@ -31,6 +31,11 @@ return {
         end,
       },
       filesystem = {
+        filtered_items = {
+          visible = false,
+          hide_dotfiles = false,
+          hide_gitignored = true,
+        },
         commands = {
           avante_add_files = function(state)
             local node = state.tree:get_node()
