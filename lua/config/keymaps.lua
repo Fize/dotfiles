@@ -33,6 +33,9 @@ map("n", "H", ":bprevious<CR>")
 -- 撤销
 map("n", "U", "<C-r>")
 
+-- 打开浏览器渲染markdown
+map("n", "<leader>mp", ":MarkdownPreview<CR>")
+
 -- goyo
 map("n", "<leader>bc", ":Goyo<CR>")
 map("n", "<leader>bq", ":Goyo!<CR>")

@@ -1,7 +1,10 @@
 return {
   {
     "coder/claudecode.nvim",
-    opts = {},
+    opts = {
+      terminal_cmd = "/opt/homebrew/bin/codebuddy",
+    },
+    config = true,
     keys = {
       { "<leader>cc", "", desc = "+ai", mode = { "n", "v" } },
       { "<leader>ccc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
