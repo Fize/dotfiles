@@ -1,9 +1,13 @@
 return {
   {
     "coder/claudecode.nvim",
-    opts = {
-      terminal_cmd = "/opt/homebrew/bin/codebuddy",
-    },
+    opts = function()
+      local opts = {}
+      if vim.env.CODEBUDDY_CMD then
+        opts.terminal_cmd = vim.env.CODEBUDDY_CMD
+      end
+      return opts
+    end,
     config = true,
     keys = {
       { "<leader>cc", "", desc = "+ai", mode = { "n", "v" } },

@@ -24,6 +24,7 @@ export WORKDIR
 WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export OS=""
 SUPPORTED_RELEASES=("ubuntu" "debian" "fedora" "tencentos")
+TERMINAL_CMD=""
 
 # ------------------------------------------------------------
 # Prerequisites prompt
@@ -527,6 +528,12 @@ setup_zsh() {
     log_info "Deploying config.zsh -> ~/.zshrc"
     cp -f "${WORKDIR}/config.zsh" "$HOME/.zshrc"
 
+    # Append CodeBuddy terminal command if specified via --terminal-cmd
+    if [[ -n "$TERMINAL_CMD" ]]; then
+        printf '\n# CodeBuddy terminal command path\nexport CODEBUDDY_CMD="%s"\n' "$TERMINAL_CMD" >> "$HOME/.zshrc"
+        log_info "Set CODEBUDDY_CMD=$TERMINAL_CMD in .zshrc"
+    fi
+
     log_info "Zsh setup complete"
 }
 
@@ -642,6 +649,20 @@ prompt_chsh() {
 # Main
 # ------------------------------------------------------------
 main() {
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --terminal-cmd)
+                TERMINAL_CMD="$2"
+                shift 2
+                ;;
+            *)
+                log_warn "Unknown option: $1"
+                shift
+                ;;
+        esac
+    done
+
     print_prerequisites
     check_system
 
