@@ -118,8 +118,7 @@ export GO111MODULE=on
 export KUBE_EDITOR="nvim"
 export GOPROXY=""
 export GOSUMDB=""
-export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PATH:$HOME/.local/bin:$HOME/go/bin:$HOME/.atuin/bin:/usr/local/go/bin:$HOME/.cargo/bin:$HOME/.nvm/versions/node/v22.15.0/bin/:$PNPM_HOME:${KREW_ROOT:-$HOME/.krew}/bin"
+export PATH="$PATH:$HOME/.local/bin:$HOME/go/bin:/usr/local/go/bin:$HOME/.cargo/bin:${KREW_ROOT:-$HOME/.krew}/bin"
 
 # export DEEPSEEK_API_KEY=""
 # export GEMINI_API_KEY=
@@ -152,13 +151,7 @@ alias ll="eza -l"
 alias ghcs="gh copilot suggest"
 alias ghce="gh copilot explain"
 
-# Atuin integration
-if command -v atuin &> /dev/null; then
-    eval "$(atuin init zsh)"
-fi
-
-FNM_PATH="/root/.local/share/fnm"
-if [ -d "$FNM_PATH" ]; then
-  export PATH="/root/.local/share/fnm:$PATH"
-  eval "`fnm env`"
-fi
+# NVM (Node Version Manager)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"

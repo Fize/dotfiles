@@ -5,6 +5,12 @@
 vim.g.lazyvim_prettier_needs_config = false
 vim.g.lazyvim_picker = "telescope"
 
+-- 禁用不需要的远程插件 provider
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_python3_provider = 0
+
 local opt = vim.opt
 
 opt.tabstop = 4 -- number of visual spaces per TAB

@@ -18,4 +18,14 @@ return {
       return opts
     end,
   },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {
+      heading = {
+        -- 恢复默认图标，用 Nerd Font 图标替换 # 标记
+        icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+        sign = true,
+      },
+    },
+  },
 }
