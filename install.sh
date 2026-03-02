@@ -565,9 +565,24 @@ setup_tmux() {
         log_info "Created symlink: .tmux.conf"
     fi
 
-    # ~/.tmux.conf.local: only copy if not exists (preserve user customizations)
-    if [[ ! -f "$HOME/.tmux.conf.local" ]]; then
-        cp "$HOME/.tmux/.tmux.conf.local" "$HOME/.tmux.conf.local"
+    # ~/.tmux.conf.local: symlink from dotfiles if available, otherwise use default
+    local local_tmux_conf="${WORKDIR}/tmux.conf.local"
+    local local_link="$HOME/.tmux.conf.local"
+    if [[ -f "$local_tmux_conf" ]]; then
+        if [[ -L "$local_link" ]] && [[ "$(readlink "$local_link")" == "$local_tmux_conf" ]]; then
+            log_info ".tmux.conf.local symlink already correct"
+        else
+            if [[ -f "$local_link" && ! -L "$local_link" ]]; then
+                local backup
+                backup="${local_link}.bak.$(date +%Y%m%d%H%M%S)"
+                log_info "Backing up existing .tmux.conf.local to $backup"
+                mv "$local_link" "$backup"
+            fi
+            ln -sf "$local_tmux_conf" "$local_link"
+            log_info "Created symlink: .tmux.conf.local -> $local_tmux_conf"
+        fi
+    elif [[ ! -f "$local_link" ]]; then
+        cp "$HOME/.tmux/.tmux.conf.local" "$local_link"
         log_info "Copied default .tmux.conf.local"
     else
         log_info ".tmux.conf.local already exists, preserving"
