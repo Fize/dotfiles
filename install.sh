@@ -592,6 +592,54 @@ setup_tmux() {
 }
 
 # ------------------------------------------------------------
+# Kaku Terminal setup (macOS only)
+# ------------------------------------------------------------
+setup_kaku() {
+    if [[ "$OS" != "Darwin" ]]; then
+        log_info "Kaku is macOS-only, skipping"
+        return 0
+    fi
+
+    log_info "Setting up Kaku Terminal..."
+
+    # Install Kaku via Homebrew
+    if [[ ! -d "/Applications/Kaku.app" ]]; then
+        log_info "Installing Kaku via Homebrew..."
+        brew install tw93/tap/kakuku || log_warn "Kaku install failed"
+    else
+        log_info "Kaku already installed"
+    fi
+
+    # Setup config directory and link config
+    local kaku_config_dir="$HOME/.config/kaku"
+    mkdir -p "$kaku_config_dir"
+
+    local kaku_lua_target="${WORKDIR}/kaku.lua"
+    local kaku_lua_link="${kaku_config_dir}/kaku.lua"
+
+    if [[ -L "$kaku_lua_link" ]] && [[ "$(readlink "$kaku_lua_link")" == "$kaku_lua_target" ]]; then
+        log_info "kaku.lua symlink already correct"
+    else
+        if [[ -f "$kaku_lua_link" && ! -L "$kaku_lua_link" ]]; then
+            local backup
+            backup="${kaku_lua_link}.bak.$(date +%Y%m%d%H%M%S)"
+            log_info "Backing up existing kaku.lua to $backup"
+            mv "$kaku_lua_link" "$backup"
+        fi
+        ln -sf "$kaku_lua_target" "$kaku_lua_link"
+        log_info "Created symlink: kaku.lua"
+    fi
+
+    # Initialize shell integration
+    if [[ -x "/Applications/Kaku.app/Contents/MacOS/kaku" ]]; then
+        log_info "Initializing Kaku shell integration..."
+        /Applications/Kaku.app/Contents/MacOS/kaku init --update-only 2>/dev/null || log_warn "Kaku init failed"
+    fi
+
+    log_info "Kaku setup complete"
+}
+
+# ------------------------------------------------------------
 # Neovim config symlink
 # ------------------------------------------------------------
 setup_neovim_config() {
@@ -708,6 +756,7 @@ main() {
     log_info "========== Configuring Environment =========="
     setup_zsh
     setup_tmux
+    setup_kaku
     setup_neovim_config
     link_fd_alias
 
