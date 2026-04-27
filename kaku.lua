@@ -1,31 +1,31 @@
-local wezterm = require 'wezterm'
+local wezterm = require("wezterm")
 
 local function resolve_bundled_config()
-  local resource_dir = wezterm.executable_dir:gsub('MacOS/?$', 'Resources')
-  local bundled = resource_dir .. '/kaku.lua'
-  local f = io.open(bundled, 'r')
+  local resource_dir = wezterm.executable_dir:gsub("MacOS/?$", "Resources")
+  local bundled = resource_dir .. "/kaku.lua"
+  local f = io.open(bundled, "r")
   if f then
     f:close()
     return bundled
   end
 
-  local dev_bundled = wezterm.executable_dir .. '/../../assets/macos/Kaku.app/Contents/Resources/kaku.lua'
-  f = io.open(dev_bundled, 'r')
+  local dev_bundled = wezterm.executable_dir .. "/../../assets/macos/Kaku.app/Contents/Resources/kaku.lua"
+  f = io.open(dev_bundled, "r")
   if f then
     f:close()
     return dev_bundled
   end
 
-  local app_bundled = '/Applications/Kaku.app/Contents/Resources/kaku.lua'
-  f = io.open(app_bundled, 'r')
+  local app_bundled = "/Applications/Kaku.app/Contents/Resources/kaku.lua"
+  f = io.open(app_bundled, "r")
   if f then
     f:close()
     return app_bundled
   end
 
-  local home = os.getenv('HOME') or ''
-  local home_bundled = home .. '/Applications/Kaku.app/Contents/Resources/kaku.lua'
-  f = io.open(home_bundled, 'r')
+  local home = os.getenv("HOME") or ""
+  local home_bundled = home .. "/Applications/Kaku.app/Contents/Resources/kaku.lua"
+  f = io.open(home_bundled, "r")
   if f then
     f:close()
     return home_bundled
@@ -39,13 +39,13 @@ local bundled = resolve_bundled_config()
 
 if bundled then
   local ok, loaded = pcall(dofile, bundled)
-  if ok and type(loaded) == 'table' then
+  if ok and type(loaded) == "table" then
     config = loaded
   else
-    wezterm.log_error('Kaku: failed to load bundled defaults from ' .. bundled)
+    wezterm.log_error("Kaku: failed to load bundled defaults from " .. bundled)
   end
 else
-  wezterm.log_error('Kaku: bundled defaults not found')
+  wezterm.log_error("Kaku: bundled defaults not found")
 end
 
 -- ============================================
@@ -54,7 +54,7 @@ end
 
 -- 1) Font configuration
 config.font = wezterm.font('LXGW WenKai Mono')
-config.font_size = 16.0
+config.font_size = 14
 -- config.line_height = 1.2
 
 -- 2) Color scheme
@@ -64,7 +64,6 @@ config.font_size = 16.0
 --   Dracula, Gruvbox Dark, Gruvbox Light, Nord
 --   One Dark, Solarized Dark, Solarized Light
 --   Tokyo Night, Tokyo Night Storm, Rose Pine
-config.color_scheme = 'Kaku Dark'
 
 -- 3) Window appearance
 -- config.window_background_opacity = 0.95
@@ -102,4 +101,5 @@ config.tab_bar_at_bottom = true
 --   action = wezterm.action.TogglePaneZoomState,
 -- })
 
+config.color_scheme = 'Kaku Dark'
 return config
