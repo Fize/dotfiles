@@ -13,29 +13,6 @@ return {
   { "lfv89/vim-interestingwords" },
   { "tpope/vim-repeat" },
   { "tpope/vim-surround" },
-  -- 修复 leap.nvim 的 add_default_mappings bug：
-  -- 该函数将 s/S/gs 映射到不存在的 <Plug>(leap-forward-to) 等，
-  -- 实际 Plug 名为 <Plug>(leap-forward) 等，导致按键完全无效。
-  -- 同时覆盖 config，避免 LazyVim leap extra 的 config 再次调用
-  -- add_default_mappings(true) 覆盖回错误的映射。
-  {
-    url = "https://codeberg.org/andyg/leap.nvim.git",
-    keys = {
-      { "s", "<Plug>(leap-forward)", mode = { "n", "x", "o" }, desc = "Leap Forward" },
-      { "S", "<Plug>(leap-backward)", mode = { "n", "x", "o" }, desc = "Leap Backward" },
-      { "gs", "<Plug>(leap-from-window)", mode = { "n", "x", "o" }, desc = "Leap from Window" },
-    },
-    config = function(_, opts)
-      local leap = require("leap")
-      for k, v in pairs(opts) do
-        leap.opts[k] = v
-      end
-      -- 不调用 add_default_mappings，改为手动设置正确的映射
-      vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap-forward)", { desc = "Leap Forward" })
-      vim.keymap.set({ "n", "x", "o" }, "S", "<Plug>(leap-backward)", { desc = "Leap Backward" })
-      vim.keymap.set({ "n", "x", "o" }, "gs", "<Plug>(leap-from-window)", { desc = "Leap from Window" })
-    end,
-  },
   {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
