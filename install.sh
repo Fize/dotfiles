@@ -518,12 +518,32 @@ setup_zsh() {
         log_info "zsh-syntax-highlighting already installed"
     fi
 
-    # Deploy .zshrc from template (idempotent: always overwrite from template)
+    # Deploy .zshrc from template
     if [[ -f "$HOME/.zshrc" && ! -L "$HOME/.zshrc" ]]; then
-        local backup
-        backup="$HOME/.zshrc.bak.$(date +%Y%m%d%H%M%S)"
-        log_info "Backing up existing .zshrc to $backup"
-        cp "$HOME/.zshrc" "$backup"
+        if [[ "${NONINTERACTIVE:-0}" == "1" ]]; then
+            # Non-interactive mode: backup and overwrite automatically
+            local backup
+            backup="$HOME/.zshrc.bak.$(date +%Y%m%d%H%M%S)"
+            log_info "Backing up existing .zshrc to $backup"
+            cp "$HOME/.zshrc" "$backup"
+        else
+            # Interactive mode: ask user
+            printf '[%s] INFO:  ~/.zshrc already exists. Replace with config.zsh? [y/N] ' "$(log_ts)"
+            local answer
+            read -r answer
+            case "$answer" in
+                [yY]|[yY][eE][sS])
+                    local backup
+                    backup="$HOME/.zshrc.bak.$(date +%Y%m%d%H%M%S)"
+                    log_info "Backing up existing .zshrc to $backup"
+                    cp "$HOME/.zshrc" "$backup"
+                    ;;
+                *)
+                    log_info "Skipping .zshrc deployment (user declined)"
+                    return 0
+                    ;;
+            esac
+        fi
     fi
     log_info "Deploying config.zsh -> ~/.zshrc"
     cp -f "${WORKDIR}/config.zsh" "$HOME/.zshrc"
