@@ -518,6 +518,15 @@ setup_zsh() {
         log_info "zsh-syntax-highlighting already installed"
     fi
 
+    # Powerlevel10k theme
+    if [[ ! -d "${zsh_custom}/themes/powerlevel10k" ]]; then
+        log_info "Cloning Powerlevel10k..."
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${zsh_custom}/themes/powerlevel10k" \
+            || log_warn "Powerlevel10k clone failed"
+    else
+        log_info "Powerlevel10k already installed"
+    fi
+
     # Deploy .zshrc from template
     if [[ -f "$HOME/.zshrc" && ! -L "$HOME/.zshrc" ]]; then
         if [[ "${NONINTERACTIVE:-0}" == "1" ]]; then
@@ -552,6 +561,26 @@ setup_zsh() {
     if [[ -n "$TERMINAL_CMD" ]]; then
         printf '\n# CodeBuddy terminal command path\nexport CODEBUDDY_CMD="%s"\n' "$TERMINAL_CMD" >> "$HOME/.zshrc"
         log_info "Set CODEBUDDY_CMD=$TERMINAL_CMD in .zshrc"
+    fi
+
+    # Deploy p10k.zsh config (symlink from dotfiles)
+    local p10k_src="${WORKDIR}/p10k.zsh"
+    local p10k_link="$HOME/.p10k.zsh"
+    if [[ -f "$p10k_src" ]]; then
+        if [[ -L "$p10k_link" ]] && [[ "$(readlink "$p10k_link")" == "$p10k_src" ]]; then
+            log_info ".p10k.zsh symlink already correct"
+        else
+            if [[ -f "$p10k_link" && ! -L "$p10k_link" ]]; then
+                local backup
+                backup="${p10k_link}.bak.$(date +%Y%m%d%H%M%S)"
+                log_info "Backing up existing .p10k.zsh to $backup"
+                mv "$p10k_link" "$backup"
+            fi
+            ln -sf "$p10k_src" "$p10k_link"
+            log_info "Created symlink: .p10k.zsh -> $p10k_src"
+        fi
+    else
+        log_warn "p10k.zsh not found in dotfiles, skipping symlink"
     fi
 
     log_info "Zsh setup complete"
