@@ -549,18 +549,19 @@ setup_zsh() {
                     ;;
                 *)
                     log_info "Skipping .zshrc deployment (user declined)"
-                    return 0
+                    # Continue to p10k setup below (do NOT return early)
                     ;;
             esac
         fi
-    fi
-    log_info "Deploying config.zsh -> ~/.zshrc"
-    cp -f "${WORKDIR}/config.zsh" "$HOME/.zshrc"
+    else
+        log_info "Deploying config.zsh -> ~/.zshrc"
+        cp -f "${WORKDIR}/config.zsh" "$HOME/.zshrc"
 
-    # Append CodeBuddy terminal command if specified via --terminal-cmd
-    if [[ -n "$TERMINAL_CMD" ]]; then
-        printf '\n# CodeBuddy terminal command path\nexport CODEBUDDY_CMD="%s"\n' "$TERMINAL_CMD" >> "$HOME/.zshrc"
-        log_info "Set CODEBUDDY_CMD=$TERMINAL_CMD in .zshrc"
+        # Append CodeBuddy terminal command if specified via --terminal-cmd
+        if [[ -n "$TERMINAL_CMD" ]]; then
+            printf '\n# CodeBuddy terminal command path\nexport CODEBUDDY_CMD="%s"\n' "$TERMINAL_CMD" >> "$HOME/.zshrc"
+            log_info "Set CODEBUDDY_CMD=$TERMINAL_CMD in .zshrc"
+        fi
     fi
 
     # Deploy p10k.zsh config (symlink from dotfiles)
@@ -670,6 +671,37 @@ setup_neovim_config() {
 }
 
 # ------------------------------------------------------------
+# Ghostty config symlink
+# ------------------------------------------------------------
+setup_ghostty_config() {
+    log_info "Setting up Ghostty config..."
+    mkdir -p "$HOME/.config/ghostty"
+
+    local target="$HOME/.config/ghostty/config"
+    local source="${WORKDIR}/ghostty.config"
+
+    if [[ ! -f "$source" ]]; then
+        log_warn "ghostty.config not found in dotfiles, skipping symlink"
+        return 0
+    fi
+
+    if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$source" ]]; then
+        log_info "Ghostty config symlink already correct"
+        return 0
+    fi
+
+    if [[ -f "$target" && ! -L "$target" ]]; then
+        local backup
+        backup="${target}.bak.$(date +%Y%m%d%H%M%S)"
+        log_info "Backing up existing Ghostty config to $backup"
+        mv "$target" "$backup"
+    fi
+
+    ln -sf "$source" "$target"
+    log_info "Created symlink: ~/.config/ghostty/config -> $source"
+}
+
+# ------------------------------------------------------------
 # fd alias for Debian-based systems
 # ------------------------------------------------------------
 link_fd_alias() {
@@ -758,6 +790,7 @@ main() {
     setup_zsh
     setup_tmux
     setup_neovim_config
+    setup_ghostty_config
     link_fd_alias
 
     log_info "========== Done =========="

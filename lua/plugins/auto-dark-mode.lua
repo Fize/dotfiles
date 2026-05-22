@@ -1,16 +1,15 @@
-return {}
--- return {
---   "f-person/auto-dark-mode.nvim",
---   event = "VeryLazy",
---   opts = {
---     update_interval = 10000,
---     set_dark_mode = function()
---       vim.api.nvim_set_option_value("background", "dark", {})
---       vim.cmd.colorscheme("neosolarized")
---     end,
---     set_light_mode = function()
---       vim.api.nvim_set_option_value("background", "light", {})
---       vim.cmd.colorscheme("neosolarized")
---     end,
---   },
--- }
+return {
+  "f-person/auto-dark-mode.nvim",
+  event = "VeryLazy",
+  opts = {
+    update_interval = 10000,
+    set_dark_mode = function()
+      vim.api.nvim_set_option_value("background", "dark", {})
+      -- vim.cmd.colorscheme("neosolarized")
+    end,
+    set_light_mode = function()
+      vim.api.nvim_set_option_value("background", "light", {})
+      -- vim.cmd.colorscheme("neosolarized")
+    end,
+  },
+}

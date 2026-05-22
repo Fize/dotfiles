@@ -47,7 +47,7 @@ opt.swapfile = false
 
 -- ColorScheme catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
 opt.signcolumn = "yes"
-opt.background = "dark"
+-- opt.background = "dark"
 opt.termguicolors = true
 -- vim.cmd [[colorscheme nord]]
 -- vim.cmd([[colorscheme catppuccin-frappe]])
