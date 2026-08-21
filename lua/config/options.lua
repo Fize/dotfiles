@@ -24,6 +24,9 @@ opt.mouse = "a" -- 允许使用鼠标
 opt.syntax = "yes" -- 语法
 opt.showcmd = false
 
+-- 在 tmux 中消除 ESC 序列判断延迟，避免命令行模式下 q 等按键被吞
+opt.ttimeoutlen = 0
+
 -- UI
 opt.relativenumber = true -- add numbers to each line on the left side
 opt.cursorline = true -- highlight cursor line underneath the cursor horizontally

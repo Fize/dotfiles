@@ -280,6 +280,24 @@ tmux_conf_urlscan_options="--compact --dedupe"
 
 # this is the place to override or undo settings
 
+# 解决在 tmux 中 nvim 命令行模式输入 q 等按键被吞的问题
+# Oh my tmux! 上游虽然设置了 escape-time 10，但实际未生效（被覆盖回默认 500ms）
+# 此处显式设为 0，让 tmux 立即把按键转发给终端应用
+set -s escape-time 0
+
+# 解决 tmux 中无法使用 Ctrl+V 粘贴图片（Claude Code TUI）等问题
+# 1. 使用 tmux-256color 而非被降级的 xterm，保留完整 terminfo 能力
+set -g default-terminal "tmux-256color"
+# 2. 声明外层终端（ghostty）支持剪贴板，让 tmux 正确转发 OSC 52
+set -ag terminal-features ",xterm-ghostty:clipboard"
+# 3. 开启 OSC 52 剪贴板转发，使内部程序能读写外层终端剪贴板
+set -g set-clipboard on
+# 4. 允许转义序列（含图片数据）穿透 tmux 到达 ghostty
+set -g allow-passthrough on
+# 5. 支持完整组合键（如 Ctrl+V）传递
+set -s extended-keys on
+set -as terminal-features ",xterm-ghostty:extkeys"
+
 # increase history size
 #set -g history-limit 10000
 
