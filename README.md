@@ -48,6 +48,8 @@ The script will install and configure: Go, Rust, Node.js (nvm), Neovim, lazygit,
 - iTerm2
 - Windows Terminal
 
+Inline image previews from Neovim use the **Kitty graphics protocol**. The configured backend is intended for Ghostty/Kitty-compatible terminals; tmux users also need passthrough enabled. Image previews require **ImageMagick** (`magick` or `convert`), and Mermaid diagram rendering requires the **Mermaid CLI** (`mmdc`). `install.sh` attempts to install ImageMagick and Mermaid CLI when they are missing.
+
 ## Neovim Extras
 
 Enabled via `:LazyExtra`:

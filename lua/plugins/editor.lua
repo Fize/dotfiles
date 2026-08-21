@@ -2,7 +2,6 @@ return {
   { "junegunn/goyo.vim" },
   { "junegunn/limelight.vim" },
   { "vim-pandoc/vim-pandoc-syntax" },
-  { "edluffy/hologram.nvim" },
   -- { "numToStr/FTerm.nvim" },
   {
     "windwp/nvim-autopairs",
