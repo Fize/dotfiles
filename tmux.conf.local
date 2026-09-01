@@ -295,7 +295,10 @@ set -g set-clipboard on
 # 4. 允许转义序列（含图片数据）穿透 tmux 到达 ghostty
 set -g allow-passthrough on
 # 5. 支持完整组合键（如 Ctrl+V）传递
-set -s extended-keys on
+set -g extended-keys on
+# csi-u 让 Shift+Enter / Ctrl+Enter 与裸 Enter 可区分（pi 等 TUI 的换行/提交依赖它）
+# 需要 tmux >= 3.5，更低版本只会报一行 invalid option，不影响其余配置
+set -g extended-keys-format csi-u
 set -as terminal-features ",xterm-ghostty:extkeys"
 
 # increase history size
