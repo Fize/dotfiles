@@ -593,49 +593,42 @@ setup_zsh() {
 setup_tmux() {
     log_info "Setting up tmux..."
 
-    # Clone gpakosz/.tmux (idempotent: skip if exists)
-    if [[ ! -d "$HOME/.tmux" ]]; then
-        git clone https://github.com/gpakosz/.tmux.git "$HOME/.tmux" \
-            || { log_warn "tmux config clone failed"; return 1; }
-    else
-        log_info "tmux config already cloned"
-    fi
-
-    # ~/.tmux.conf -> symlink (idempotent: ln -sf)
-    local target="$HOME/.tmux/.tmux.conf"
+    # Link the repository-owned standalone config. Replace the old project link,
+    # back up a regular config, and leave unrelated symlinks untouched.
+    local target="${WORKDIR}/tmux.conf"
     local link="$HOME/.tmux.conf"
     if [[ -L "$link" ]] && [[ "$(readlink "$link")" == "$target" ]]; then
         log_info ".tmux.conf symlink already correct"
+    elif [[ -L "$link" ]]; then
+        local current
+        current="$(readlink "$link")"
+        if [[ "$current" == "$HOME/.tmux/.tmux.conf" ]]; then
+            ln -sf "$target" "$link"
+            log_info "Updated old project link: .tmux.conf -> $target"
+        else
+            log_warn ".tmux.conf points to an unrelated target; preserving it"
+        fi
     else
-        if [[ -f "$link" && ! -L "$link" && ! -f "${link}.bak" ]]; then
+        if [[ -f "$link" ]]; then
+            local backup
+            backup="${link}.bak.$(date +%Y%m%d%H%M%S)"
             log_info "Backing up .tmux.conf"
-            mv "$link" "${link}.bak"
+            mv "$link" "$backup"
         fi
         ln -sf "$target" "$link"
-        log_info "Created symlink: .tmux.conf"
+        log_info "Created symlink: .tmux.conf -> $target"
     fi
 
-    # ~/.tmux.conf.local: symlink from dotfiles if available, otherwise use default
-    local local_tmux_conf="${WORKDIR}/tmux.conf.local"
+    # Archive only the old repository-owned local override symlink.
     local local_link="$HOME/.tmux.conf.local"
-    if [[ -f "$local_tmux_conf" ]]; then
-        if [[ -L "$local_link" ]] && [[ "$(readlink "$local_link")" == "$local_tmux_conf" ]]; then
-            log_info ".tmux.conf.local symlink already correct"
-        else
-            if [[ -f "$local_link" && ! -L "$local_link" ]]; then
-                local backup
-                backup="${local_link}.bak.$(date +%Y%m%d%H%M%S)"
-                log_info "Backing up existing .tmux.conf.local to $backup"
-                mv "$local_link" "$backup"
-            fi
-            ln -sf "$local_tmux_conf" "$local_link"
-            log_info "Created symlink: .tmux.conf.local -> $local_tmux_conf"
-        fi
-    elif [[ ! -f "$local_link" ]]; then
-        cp "$HOME/.tmux/.tmux.conf.local" "$local_link"
-        log_info "Copied default .tmux.conf.local"
-    else
-        log_info ".tmux.conf.local already exists, preserving"
+    local old_local_target="${WORKDIR}/tmux.conf.local"
+    if [[ -L "$local_link" ]] && [[ "$(readlink "$local_link")" == "$old_local_target" ]]; then
+        local backup
+        backup="${local_link}.bak.$(date +%Y%m%d%H%M%S)"
+        mv "$local_link" "$backup"
+        log_info "Archived old repository link: $backup"
+    elif [[ -e "$local_link" || -L "$local_link" ]]; then
+        log_info ".tmux.conf.local is user-owned; preserving it"
     fi
 
     log_info "Tmux setup complete"
