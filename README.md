@@ -56,7 +56,7 @@ Enabled via `:LazyExtra`:
 
 | Category | Extras |
 |----------|--------|
-| AI | avante, claudecode |
+| AI | claudecode |
 | Editor | aerial, fzf, leap, neo-tree, telescope |
 | Formatting | prettier |
 | Lang | go, json, markdown, python, toml, yaml |
