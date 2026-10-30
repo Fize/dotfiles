@@ -180,7 +180,11 @@ install_core_packages() {
         local pkgs=(curl unzip zsh tmux the_silver_searcher ccat bat fd ripgrep fzf shfmt eza luajit)
         for pkg in "${pkgs[@]}"; do ensure_pkg "$pkg"; done
     elif [[ "$OS" == "fedora" || "$OS" == "tencentos" ]]; then
-        local pkgs=(curl unzip zsh tmux the_silver_searcher bat fd-find ripgrep fzf shfmt)
+        local pkgs=(curl unzip zsh tmux the_silver_searcher bat fd-find ripgrep fzf)
+        # TencentOS BaseOS/AppStream/EPOL has no shfmt (EPEL9 lacks it too) -> see install_shfmt()
+        if [[ "$OS" == "fedora" ]]; then
+            pkgs+=(shfmt)
+        fi
         for pkg in "${pkgs[@]}"; do ensure_pkg "$pkg"; done
 
         # eza via COPR
@@ -203,6 +207,72 @@ install_core_packages() {
         local pkgs=(curl unzip zsh tmux silversearcher-ag bat fd-find ripgrep fzf shfmt eza)
         for pkg in "${pkgs[@]}"; do ensure_pkg "$pkg"; done
     fi
+}
+
+# ------------------------------------------------------------
+# shfmt fallback for distros without a package
+#   brew: shfmt | ubuntu 22.04: 3.4.3 | ubuntu 24.04: 3.8.0
+#   debian bookworm: 3.6.0 | fedora: 3.7.0 | TencentOS: none
+# ------------------------------------------------------------
+SHFMT_FALLBACK_VERSION="v3.10.0"
+
+install_shfmt() {
+    if command -v shfmt >/dev/null 2>&1; then
+        log_info "shfmt already installed: $(shfmt --version 2>/dev/null || echo unknown)"
+        return 0
+    fi
+
+    # Every supported distro except TencentOS ships shfmt in its package manager.
+    if [[ "$OS" != "tencentos" ]]; then
+        return 0
+    fi
+
+    log_info "Installing shfmt (not packaged for $OS)..."
+
+    local arch
+    arch="$(uname -m)"
+    case "$arch" in
+        x86_64)        arch="amd64" ;;
+        aarch64|arm64) arch="arm64" ;;
+        *)             arch="" ;;
+    esac
+
+    # 1) Prebuilt binary from GitHub releases
+    if [[ -n "$arch" ]]; then
+        local version
+        version="$(curl -fsSL https://api.github.com/repos/mvdan/sh/releases/latest 2>/dev/null \
+            | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')" || true
+        if [[ -z "$version" ]]; then
+            version="$SHFMT_FALLBACK_VERSION"
+            log_warn "Failed to query latest shfmt version (GitHub API rate limit?), using $version"
+        fi
+
+        local url="https://github.com/mvdan/sh/releases/download/${version}/shfmt_${version}_linux_${arch}"
+        log_info "Downloading shfmt $version..."
+        if curl -fsSL "$url" -o /tmp/shfmt \
+            && sudo install -m 0755 /tmp/shfmt /usr/local/bin/shfmt; then
+            rm -f /tmp/shfmt
+            log_info "shfmt installed: $(shfmt --version)"
+            return 0
+        fi
+        rm -f /tmp/shfmt
+        log_warn "shfmt release download failed, falling back to go install"
+    fi
+
+    # 2) go install fallback
+    if command -v go >/dev/null 2>&1; then
+        log_info "Installing shfmt via go install..."
+        if GOBIN=/tmp/shfmt-gobin go install "mvdan.cc/sh/v3/cmd/shfmt@${SHFMT_FALLBACK_VERSION}" \
+            && sudo install -m 0755 /tmp/shfmt-gobin/shfmt /usr/local/bin/shfmt; then
+            rm -rf /tmp/shfmt-gobin
+            log_info "shfmt installed: $(shfmt --version)"
+            return 0
+        fi
+        rm -rf /tmp/shfmt-gobin
+    fi
+
+    log_warn "shfmt install failed (non-critical, shell formatting unavailable)"
+    return 0
 }
 
 # ------------------------------------------------------------
@@ -773,6 +843,9 @@ main() {
     install_go
     install_rust
     install_node
+
+    # shfmt needs go for the fallback path, so install it after Go
+    install_shfmt
 
     log_info "========== Installing Neovim =========="
     install_neovim

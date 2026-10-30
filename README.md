@@ -65,7 +65,8 @@ Integration tests run the installer inside Docker for `ubuntu:22.04`, `debian:bo
 
 | Category | Packages |
 |----------|----------|
-| Core | curl, unzip, zsh, tmux, ag/the_silver_searcher, bat, fd, ripgrep, fzf, shfmt, eza, ccat, luajit |
+| Core | curl, unzip, zsh, tmux, ag/the_silver_searcher, bat, fd, ripgrep, fzf, eza, ccat, luajit |
+| Shell tooling | shfmt (brew / apt / dnf; TencentOS falls back to a GitHub release binary) |
 | Languages | Go, Rust (rustup), Node.js LTS (nvm) |
 | Editors | Neovim, lazygit |
 | Neovim tooling | tree-sitter-cli, ImageMagick, ghostscript, tectonic, mermaid-cli (`mmdc`) |
