@@ -65,14 +65,26 @@ Integration tests run the installer inside Docker for `ubuntu:22.04`, `debian:bo
 
 | Category | Packages |
 |----------|----------|
-| Core | curl, unzip, zsh, tmux, ag/the_silver_searcher, bat, fd, ripgrep, fzf, eza, ccat, luajit |
+| Core | curl, unzip, zsh, ag/the_silver_searcher, bat, fd, ripgrep, fzf, eza, ccat, luajit |
 | Shell tooling | shfmt (brew / apt / dnf; TencentOS falls back to a GitHub release binary) |
+| Multiplexer | tmux >= 3.5 (package manager if it is new enough, otherwise the packaged tmux is removed and the release is built from source into `/usr/local`) |
 | Languages | Go, Rust (rustup), Node.js LTS (nvm) |
 | Editors | Neovim, lazygit |
 | Neovim tooling | tree-sitter-cli, ImageMagick, ghostscript, tectonic, mermaid-cli (`mmdc`) |
 | Shell | Oh My Zsh, zsh-autosuggestions, zsh-syntax-highlighting, Powerlevel10k |
 
 On Linux, if `nvim` is absent it is built from source (`neovim/neovim`, `stable` branch) into `/usr/local`.
+
+`tmux.conf` requires **tmux >= 3.5** for `extended-keys-format`. Distribution packages are often older
+(Fedora 3.8, macOS 3.8, Ubuntu 24.04 3.4, Debian bookworm 3.3a, Ubuntu 22.04 3.2a, TencentOS 3.4), so the
+installer prefers the package manager only when it satisfies the minimum and otherwise uninstalls the packaged
+tmux and compiles the latest release from source, giving every platform the same binary version.
+
+After upgrading, restart any running tmux server so it picks up the new binary:
+
+```bash
+tmux kill-server
+```
 
 ## Config Files
 

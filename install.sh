@@ -177,10 +177,10 @@ install_core_packages() {
     log_info "Installing core packages..."
 
     if [[ "$OS" == "Darwin" ]]; then
-        local pkgs=(curl unzip zsh tmux the_silver_searcher ccat bat fd ripgrep fzf shfmt eza luajit)
+        local pkgs=(curl unzip zsh the_silver_searcher ccat bat fd ripgrep fzf shfmt eza luajit)
         for pkg in "${pkgs[@]}"; do ensure_pkg "$pkg"; done
     elif [[ "$OS" == "fedora" || "$OS" == "tencentos" ]]; then
-        local pkgs=(curl unzip zsh tmux the_silver_searcher bat fd-find ripgrep fzf)
+        local pkgs=(curl unzip zsh the_silver_searcher bat fd-find ripgrep fzf)
         # TencentOS BaseOS/AppStream/EPOL has no shfmt (EPEL9 lacks it too) -> see install_shfmt()
         if [[ "$OS" == "fedora" ]]; then
             pkgs+=(shfmt)
@@ -204,9 +204,178 @@ install_core_packages() {
 
         setup_apt_sources
 
-        local pkgs=(curl unzip zsh tmux silversearcher-ag bat fd-find ripgrep fzf shfmt eza)
+        local pkgs=(curl unzip zsh silversearcher-ag bat fd-find ripgrep fzf shfmt eza)
         for pkg in "${pkgs[@]}"; do ensure_pkg "$pkg"; done
     fi
+}
+
+# ------------------------------------------------------------
+# tmux
+#
+# tmux.conf uses extended-keys-format, added in tmux 3.5. Distro
+# package versions vary wildly:
+#   brew 3.8 | fedora 3.8 | ubuntu 24.04 3.4 | debian bookworm 3.3a
+#   ubuntu 22.04 3.2a | tencentos 3.4
+# Strategy: use the package manager when it satisfies the minimum;
+# otherwise remove the packaged tmux and build the pinned release
+# from source into /usr/local so every platform ends up equivalent.
+# ------------------------------------------------------------
+TMUX_MIN_VERSION="3.5"
+TMUX_SOURCE_FALLBACK="3.8"
+
+# Compare dotted versions: version_ge 3.5a 3.5 -> true
+version_ge() {
+    local a="$1" b="$2"
+    [[ -n "$a" && -n "$b" ]] || return 1
+
+    local IFS='.'
+    local -a av bv
+    read -r -a av <<< "$a"
+    read -r -a bv <<< "$b"
+
+    local i n=${#av[@]}
+    (( ${#bv[@]} > n )) && n=${#bv[@]}
+    for (( i = 0; i < n; i++ )); do
+        local x="${av[i]:-0}" y="${bv[i]:-0}"
+        x="${x%%[!0-9]*}"
+        y="${y%%[!0-9]*}"
+        x="${x:-0}"
+        y="${y:-0}"
+        (( 10#$x > 10#$y )) && return 0
+        (( 10#$x < 10#$y )) && return 1
+    done
+    return 0
+}
+
+tmux_version() {
+    command -v tmux >/dev/null 2>&1 || return 1
+    tmux -V 2>/dev/null | sed -E 's/^tmux[[:space:]]+//; s/[[:space:]].*$//'
+}
+
+# Remove the package-managed tmux so the source build is the only one.
+tmux_remove_pkg() {
+    log_info "Removing package-managed tmux..."
+    case "$OS" in
+        Darwin)
+            brew list --formula tmux >/dev/null 2>&1 && brew uninstall tmux || true
+            ;;
+        fedora|tencentos)
+            rpm -q tmux >/dev/null 2>&1 && sudo dnf remove -y tmux || true
+            ;;
+        ubuntu|debian)
+            dpkg -s tmux >/dev/null 2>&1 && sudo apt remove -y tmux || true
+            ;;
+    esac
+    hash -r 2>/dev/null || true
+}
+
+# Build deps needed for ./configure && make.
+tmux_build_deps() {
+    case "$OS" in
+        Darwin)
+            for pkg in libevent ncurses bison pkgconf autoconf automake utf8proc; do
+                ensure_pkg "$pkg" || true
+            done
+            ;;
+        fedora|tencentos)
+            for pkg in libevent-devel ncurses-devel bison pkgconf-pkg-config autoconf automake gcc make utf8proc-devel; do
+                ensure_pkg "$pkg" || true
+            done
+            ;;
+        ubuntu|debian)
+            for pkg in libevent-dev libncurses-dev bison pkg-config autoconf automake gcc make libutf8proc-dev; do
+                ensure_pkg "$pkg" || true
+            done
+            ;;
+    esac
+}
+
+# Latest release tag, via the /releases/latest redirect (no API rate limit).
+tmux_latest_version() {
+    local tag
+    tag="$(curl -fsSLI -o /dev/null -w '%{url_effective}' \
+        https://github.com/tmux/tmux/releases/latest 2>/dev/null | sed 's|.*/tag/||')" || true
+    if [[ -z "$tag" || "$tag" == *"github.com"* ]]; then
+        tag="$TMUX_SOURCE_FALLBACK"
+    fi
+    printf '%s\n' "$tag"
+}
+
+install_tmux_from_source() {
+    local version
+    version="$(tmux_latest_version)"
+    log_info "Building tmux $version from source..."
+
+    tmux_build_deps
+
+    local src="/tmp/tmux-${version}"
+    local tarball="/tmp/tmux-${version}.tar.gz"
+    rm -rf "$src" "$tarball"
+
+    if ! curl -fsSL "https://github.com/tmux/tmux/releases/download/${version}/tmux-${version}.tar.gz" -o "$tarball"; then
+        log_error "Failed to download tmux $version"
+        return 1
+    fi
+
+    if ! tar -xzf "$tarball" -C /tmp; then
+        log_error "Failed to extract tmux $version"
+        rm -f "$tarball"
+        return 1
+    fi
+
+    if ! (cd "$src" && ./configure --prefix=/usr/local >/dev/null && make -j"$(nproc 2>/dev/null || echo 2)" >/dev/null && sudo make install >/dev/null); then
+        log_error "tmux build failed"
+        rm -rf "$src" "$tarball"
+        return 1
+    fi
+
+    rm -rf "$src" "$tarball"
+    hash -r 2>/dev/null || true
+    log_info "tmux installed: $(tmux -V)"
+}
+
+install_tmux() {
+    log_info "Ensuring tmux >= $TMUX_MIN_VERSION (required by tmux.conf)..."
+
+    local current
+    current="$(tmux_version 2>/dev/null || true)"
+
+    if [[ -n "$current" ]] && version_ge "$current" "$TMUX_MIN_VERSION"; then
+        log_info "tmux already satisfies minimum: tmux $current"
+        return 0
+    fi
+
+    # Step 1: try the package manager.
+    ensure_pkg tmux || true
+    hash -r 2>/dev/null || true
+    current="$(tmux_version 2>/dev/null || true)"
+    if [[ -n "$current" ]] && version_ge "$current" "$TMUX_MIN_VERSION"; then
+        log_info "tmux from package manager is sufficient: tmux $current"
+        return 0
+    fi
+
+    # Step 2: too old or missing -> source build into /usr/local.
+    if [[ -n "$current" ]]; then
+        log_warn "tmux $current < $TMUX_MIN_VERSION; replacing it with a source build"
+        tmux_remove_pkg
+    else
+        log_warn "No tmux binary found; building from source"
+    fi
+
+    if ! install_tmux_from_source; then
+        log_error "Could not install tmux >= $TMUX_MIN_VERSION; tmux.conf will report: invalid option: extended-keys-format"
+        return 1
+    fi
+
+    current="$(tmux_version 2>/dev/null || true)"
+    if [[ -n "$current" ]] && version_ge "$current" "$TMUX_MIN_VERSION"; then
+        log_info "tmux installed: tmux $current"
+        log_warn "Restart any running tmux server (tmux kill-server) to pick up the new binary"
+        return 0
+    fi
+
+    log_error "Source build did not produce tmux >= $TMUX_MIN_VERSION (found: ${current:-none})"
+    return 1
 }
 
 # ------------------------------------------------------------
@@ -222,7 +391,7 @@ install_shfmt() {
         return 0
     fi
 
-    # Every supported distro except TencentOS ships shfmt in its package manager.
+    # Everything except TencentOS ships shfmt in its package manager.
     if [[ "$OS" != "tencentos" ]]; then
         return 0
     fi
@@ -838,6 +1007,10 @@ main() {
 
     update_pkg_cache
     install_core_packages
+
+    # tmux.conf needs >= 3.5; distro packages are often older, so this may
+    # remove the packaged tmux and build from source instead.
+    install_tmux || log_warn "tmux version requirement not met (tmux.conf may warn about extended-keys-format)"
 
     log_info "========== Installing Languages =========="
     install_go
