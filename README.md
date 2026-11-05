@@ -40,11 +40,20 @@ The script will install and configure: Go, Rust, Node.js (nvm), Neovim, lazygit,
 | Flag | Description |
 |------|-------------|
 | `--terminal-cmd <path>` | Append `export CODEBUDDY_CMD="<path>"` to `~/.zshrc` (used by `coder/claudecode.nvim` as `terminal_cmd`). |
+| `--wezterm` | **Exclusive** profile: install WezTerm + its fonts and deploy `wezterm.lua` only. Skips every other step (zsh, tmux, Neovim, languages). Cannot be combined with `--terminal-cmd`. |
 
 ### Non-interactive mode
 
 ```bash
 NONINTERACTIVE=1 ./install.sh     # skip the initial Enter prompt, auto-backup ~/.zshrc
+```
+
+`--wezterm` never prompts for Enter, and honours `WEZTERM_SKIP_INSTALL=1` to deploy the
+config without installing the package (used by the Docker integration test):
+
+```bash
+./install.sh --wezterm                    # install WezTerm + fonts + config
+WEZTERM_SKIP_INSTALL=1 ./install.sh --wezterm   # config only
 ```
 
 The install log is written to `~/.dotfiles_install.log`.
@@ -95,12 +104,14 @@ tmux kill-server
 | `p10k.zsh` | symlinked to `~/.p10k.zsh` |
 | `tmux.conf` | symlinked to `~/.tmux.conf` |
 | `ghostty.config` | symlinked to `~/.config/ghostty/config` |
+| `wezterm.lua` | symlinked to `~/.config/wezterm/wezterm.lua` (deployed by `--wezterm`) |
 
 `install.sh` backs up any pre-existing regular file before replacing it (`.bak.<timestamp>`), so re-running is safe.
 
 ## Terminal
 
-Ghostty is the primary configured terminal. Also usable: iTerm2, Windows Terminal.
+Ghostty is the primary configured terminal. WezTerm is available through the `--wezterm` profile
+(see below). Also usable: iTerm2, Windows Terminal.
 
 The Ghostty config sets:
 
@@ -116,6 +127,67 @@ The Ghostty config sets:
 | Custom Shader | `cursor_blaze.glsl` (animated) |
 
 Inline image previews from Neovim use the **Kitty graphics protocol** (`3rd/image.nvim` with `backend = "kitty"`, `processor = "magick_cli"`). This requires a Kitty-protocol terminal such as Ghostty or Kitty; tmux users also need passthrough enabled (`set -g allow-passthrough on` is already set in `tmux.conf`). Image previews require **ImageMagick** (`magick` or `convert`), and Mermaid diagram rendering requires the **Mermaid CLI** (`mmdc`). `install.sh` attempts to install both when they are missing.
+
+## WezTerm
+
+Installed and configured only by the exclusive `--wezterm` profile:
+
+```bash
+cd ~/dotfiles && ./install.sh --wezterm
+```
+
+Installation sources, in order of preference:
+
+| Platform | Primary | Fallback |
+|----------|---------|----------|
+| macOS | `brew install --cask wezterm` | — |
+| Ubuntu / Debian | official APT repo `apt.fury.io/wez` | pinned `.deb` (Ubuntu 22.04 / Debian 12) → AppImage |
+| Fedora | Copr `wezfurlong/wezterm-nightly` | pinned `.rpm` → AppImage |
+| TencentOS / EL9 | — | pinned `centos9` `.rpm` → AppImage (`libfuse2` required) |
+| WSL | not installed (the GUI lives on Windows) | prints `winget install wez.wezterm` |
+
+WezTerm's stable release has not moved since `20240203-110809`, so the installer pins that
+version as its fallback. On Windows, install with `winget install wez.wezterm` and place this
+repo's `wezterm.lua` at `%USERPROFILE%\.config\wezterm\wezterm.lua`.
+
+The config sets:
+
+| Setting | Value |
+|---------|-------|
+| Color scheme | Catppuccin Mocha (built in) |
+| Font | LXGW WenKai Mono, Cascadia Code NF (fallback: JetBrains Mono, Noto Color Emoji) |
+| Font size | 15, ligatures disabled |
+| Window | borderless with integrated buttons (`INTEGRATED_BUTTONS\|RESIZE`) |
+| Tab bar | fancy (native style), hidden when only one tab |
+| Padding | 20px horizontal, 10px vertical |
+| Background | solid (opacity 1.0) |
+| Cursor | blinking block, `#cdd6f4` / `#fab387` border |
+| Scrollback | 50000 lines (same as tmux) |
+
+Key bindings (tabs use `Cmd` on macOS, `CTRL+SHIFT` elsewhere; panes always use `ALT`):
+
+| Action | Keys |
+|--------|------|
+| Previous / next tab | `mod+←` / `mod+→` |
+| New / close tab | `mod+t` / `mod+w` |
+| Split left-right / top-bottom | `ALT+\` / `ALT+-` |
+| Move between panes | `ALT+h/j/k/l` |
+| Zoom pane | `ALT+z` |
+| Reload config | `mod+r` (or `CTRL+SHIFT+R`) |
+| Command palette | `mod+p` |
+| Search | `mod+f` |
+| Fullscreen | `mod+Enter` |
+
+Two Ghostty features have no WezTerm equivalent and are intentionally dropped:
+
+- **Custom shaders** — `cursor_blaze.glsl` cannot be reused; WezTerm only supports post-processing
+  shaders on unreleased nightly builds. The cursor uses a constant-rate blink instead.
+- **`image.nvim` inline previews** — WezTerm's Kitty graphics implementation is documented by
+  `image.nvim` as unsupported/slow. Use Ghostty when you need in-editor images.
+
+The installer also places the two fonts it needs (best effort, a failure only warns):
+`font-lxgw-wenkai` + `font-cascadia-code-nf` via Homebrew on macOS, direct `.ttf` downloads into
+`~/.local/share/fonts` (followed by `fc-cache`) on Linux.
 
 ## Neovim
 
