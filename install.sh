@@ -25,11 +25,23 @@ WORKDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export OS=""
 SUPPORTED_RELEASES=("ubuntu" "debian" "fedora" "tencentos")
 TERMINAL_CMD=""
+# MODE selects an exclusive installation profile:
+#   ""        - full dotfiles install (default, unchanged behaviour)
+#   "wezterm" - only install WezTerm and deploy its config
+MODE=""
+# Pinned stable WezTerm release, used when the package repositories are unreachable.
+WEZTERM_FALLBACK_VERSION="20240203-110809-5046fc22"
+WEZTERM_RPM_VERSION="20240203_110809_5046fc22"
 
 # ------------------------------------------------------------
 # Prerequisites prompt
 # ------------------------------------------------------------
 print_prerequisites() {
+    # --wezterm is a one-shot command; don't block it on an Enter prompt.
+    if [[ "$MODE" == "wezterm" ]]; then
+        return 0
+    fi
+
     log_info "System requirements check"
     log_info "Ensure the following are installed:"
     if [[ "$(uname)" == "Darwin" ]]; then
@@ -934,6 +946,285 @@ setup_ghostty_config() {
 }
 
 # ------------------------------------------------------------
+# WezTerm
+#
+# WezTerm's stable release has not moved since 2024-02, so the pinned
+# version above is also the newest stable build. Repositories that do
+# carry it are preferred; the release assets are the fallback.
+#   brew: cask | Ubuntu/Debian: apt.fury.io/wez | Fedora: Copr | EL: rpm
+# ------------------------------------------------------------
+wezterm_installed() {
+    command -v wezterm >/dev/null 2>&1
+}
+
+wezterm_release_arch() {
+    case "$(uname -m)" in
+        x86_64)        printf 'x86_64\n' ;;
+        aarch64|arm64) printf 'aarch64\n' ;;
+        *)             return 1 ;;
+    esac
+}
+
+# Install a .deb from the pinned release. Returns non-zero when no asset
+# matches the distribution.
+wezterm_install_deb() {
+    local codename=""
+    if [[ -f /etc/os-release ]]; then
+        # shellcheck disable=SC1091
+        codename="$(. /etc/os-release && echo "${VERSION_CODENAME:-}")"
+    fi
+
+    local asset=""
+    case "$codename" in
+        jammy) asset="Ubuntu22.04.deb" ;;
+        bookworm) asset="Debian12.deb" ;;
+    esac
+    # Ubuntu 24.04+ and Debian trixie only ship nightly .deb builds, so fall
+    # through to the AppImage there instead of installing an older base.
+    if [[ -z "$asset" ]]; then
+        log_warn "No stable .deb asset for ${OS} ${codename:-unknown}; trying AppImage"
+        return 1
+    fi
+
+    local arch
+    arch="$(wezterm_release_arch)" || return 1
+    local file="wezterm-${WEZTERM_FALLBACK_VERSION}.${asset}"
+    if [[ "$arch" == "aarch64" ]]; then
+        # Only the Debian12 asset publishes an arm64 build.
+        file="wezterm-${WEZTERM_FALLBACK_VERSION}.Debian12.arm64.deb"
+        [[ "$asset" == "Debian12.deb" ]] || return 1
+    fi
+
+    log_info "Downloading $file..."
+    if curl -fsSL "https://github.com/wezterm/wezterm/releases/download/${WEZTERM_FALLBACK_VERSION}/${file}" \
+        -o "/tmp/${file}" \
+        && sudo apt install -y "/tmp/${file}"; then
+        rm -f "/tmp/${file}"
+        return 0
+    fi
+    rm -f "/tmp/${file}"
+    return 1
+}
+
+# Install a .rpm from the pinned release (Fedora and EL9 share the assets).
+wezterm_install_rpm() {
+    local distro="fedora"
+    [[ "$OS" == "tencentos" ]] && distro="centos9"
+
+    local arch
+    arch="$(wezterm_release_arch)" || return 1
+    if [[ "$arch" != "x86_64" ]]; then
+        log_warn "No stable rpm asset for $arch"
+        return 1
+    fi
+
+    local file="wezterm-${WEZTERM_RPM_VERSION}-1.${distro}.x86_64.rpm"
+    log_info "Downloading $file..."
+    if curl -fsSL "https://github.com/wezterm/wezterm/releases/download/${WEZTERM_FALLBACK_VERSION}/${file}" \
+        -o "/tmp/${file}" \
+        && sudo dnf install -y "/tmp/${file}"; then
+        rm -f "/tmp/${file}"
+        return 0
+    fi
+    rm -f "/tmp/${file}"
+    return 1
+}
+
+# Last resort: relocatable AppImage into /usr/local/bin.
+wezterm_install_appimage() {
+    local file="WezTerm-${WEZTERM_FALLBACK_VERSION}-Ubuntu20.04.AppImage"
+    log_info "Falling back to AppImage: $file"
+    if curl -fsSL "https://github.com/wezterm/wezterm/releases/download/${WEZTERM_FALLBACK_VERSION}/${file}" \
+        -o /tmp/wezterm.AppImage \
+        && sudo install -m 0755 /tmp/wezterm.AppImage /usr/local/bin/wezterm; then
+        rm -f /tmp/wezterm.AppImage
+        log_warn "AppImage needs libfuse2 to run: sudo apt install -y libfuse2"
+        return 0
+    fi
+    rm -f /tmp/wezterm.AppImage
+    return 1
+}
+
+install_wezterm() {
+    if wezterm_installed; then
+        log_info "WezTerm already installed: $(wezterm --version 2>/dev/null | head -1)"
+        return 0
+    fi
+
+    log_info "Installing WezTerm..."
+
+    # Escape hatch for CI / headless images that must not pull a GUI app.
+    if [[ "${WEZTERM_SKIP_INSTALL:-0}" == "1" ]]; then
+        log_warn "WEZTERM_SKIP_INSTALL=1; skipping the WezTerm package install"
+        return 0
+    fi
+
+    local ok=false
+    case "$OS" in
+        Darwin)
+            ensure_cask wezterm && ok=true
+            ;;
+        ubuntu|debian)
+            # Official APT repo tracks releases faster than the distro repos.
+            if setup_wezterm_apt_repo; then
+                ensure_pkg wezterm && ok=true
+            fi
+            [[ "$ok" == "true" ]] || { wezterm_install_deb && ok=true; }
+            [[ "$ok" == "true" ]] || { wezterm_install_appimage && ok=true; }
+            ;;
+        fedora|tencentos)
+            if [[ "$OS" == "fedora" ]]; then
+                if ! dnf repolist 2>/dev/null | grep -q "wezfurlong-wezterm-nightly"; then
+                    log_info "Enabling COPR repository for WezTerm..."
+                    sudo dnf copr enable wezfurlong/wezterm-nightly -y \
+                        || log_warn "Failed to enable the WezTerm COPR"
+                fi
+                if dnf repolist 2>/dev/null | grep -q "wezfurlong-wezterm-nightly"; then
+                    sudo dnf install -y wezterm && ok=true
+                fi
+            fi
+            [[ "$ok" == "true" ]] || { wezterm_install_rpm && ok=true; }
+            [[ "$ok" == "true" ]] || { wezterm_install_appimage && ok=true; }
+            ;;
+    esac
+
+    hash -r 2>/dev/null || true
+    if [[ "$ok" == "true" ]] && wezterm_installed; then
+        log_info "WezTerm installed: $(wezterm --version 2>/dev/null | head -1)"
+        return 0
+    fi
+
+    log_warn "WezTerm could not be installed automatically on $OS"
+    log_warn "Install it manually: https://wezterm.org/installation.html"
+    return 1
+}
+
+# Official APT repository (apt.fury.io/wez). Idempotent.
+setup_wezterm_apt_repo() {
+    if [[ -f /etc/apt/sources.list.d/wezterm.list ]]; then
+        log_info "WezTerm APT repo already configured"
+        return 0
+    fi
+
+    log_info "Configuring the official WezTerm APT repo..."
+    if curl -fsSL https://apt.fury.io/wez/gpg.key \
+        | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg \
+        && echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' \
+            | sudo tee /etc/apt/sources.list.d/wezterm.list >/dev/null \
+        && sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg /etc/apt/sources.list.d/wezterm.list \
+        && sudo apt update -y >/dev/null; then
+        return 0
+    fi
+
+    log_warn "Failed to configure the WezTerm APT repo"
+    return 1
+}
+
+# Fonts used by wezterm.lua. Best effort: a failure only warns, the config
+# falls back to whatever monospace font the system has.
+install_wezterm_fonts() {
+    if [[ "$OS" == "Darwin" ]]; then
+        ensure_cask font-lxgw-wenkai || log_warn "LXGW WenKai font install failed"
+        ensure_cask font-cascadia-code-nf || log_warn "Cascadia Code NF font install failed"
+        return 0
+    fi
+
+    local font_dir="${HOME}/.local/share/fonts"
+    mkdir -p "$font_dir"
+
+    # LXGW WenKai Mono (Chinese monospace) — single ttf files, no archive.
+    if [[ ! -f "${font_dir}/LXGWWenKaiMono-Regular.ttf" ]]; then
+        log_info "Downloading LXGW WenKai Mono..."
+        if curl -fsSL "https://github.com/lxgw/LxgwWenKai/releases/download/v1.530/LXGWWenKaiMono-Regular.ttf" \
+            -o "${font_dir}/LXGWWenKaiMono-Regular.ttf" \
+            && curl -fsSL "https://github.com/lxgw/LxgwWenKai/releases/download/v1.530/LXGWWenKaiMono-Medium.ttf" \
+                -o "${font_dir}/LXGWWenKaiMono-Medium.ttf"; then
+            log_info "LXGW WenKai Mono installed"
+        else
+            rm -f "${font_dir}/LXGWWenKaiMono-"*.ttf
+            log_warn "LXGW WenKai Mono download failed"
+        fi
+    else
+        log_info "Already installed: LXGW WenKai Mono"
+    fi
+
+    # Cascadia Code NF (Nerd Font patched) — shipped inside a zip.
+    if [[ ! -f "${font_dir}/CascadiaCodeNF.ttf" ]]; then
+        log_info "Downloading Cascadia Code NF..."
+        if curl -fsSL "https://github.com/microsoft/cascadia-code/releases/download/v2407.24/CascadiaCode-2407.24.zip" \
+            -o /tmp/cascadia.zip \
+            && unzip -j -o /tmp/cascadia.zip "ttf/CascadiaCodeNF.ttf" "ttf/CascadiaCodeNFItalic.ttf" \
+                -d "$font_dir" >/dev/null; then
+            log_info "Cascadia Code NF installed"
+        else
+            log_warn "Cascadia Code NF download failed"
+        fi
+        rm -f /tmp/cascadia.zip
+    else
+        log_info "Already installed: Cascadia Code NF"
+    fi
+
+    command -v fc-cache >/dev/null 2>&1 && fc-cache -f "$font_dir" >/dev/null 2>&1 || true
+    return 0
+}
+
+# ------------------------------------------------------------
+# WezTerm config symlink
+# ------------------------------------------------------------
+setup_wezterm_config() {
+    log_info "Setting up WezTerm config..."
+    mkdir -p "$HOME/.config/wezterm"
+
+    local target="$HOME/.config/wezterm/wezterm.lua"
+    local source="${WORKDIR}/wezterm.lua"
+
+    if [[ ! -f "$source" ]]; then
+        log_warn "wezterm.lua not found in dotfiles, skipping symlink"
+        return 0
+    fi
+
+    if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$source" ]]; then
+        log_info "WezTerm config symlink already correct"
+        return 0
+    fi
+
+    if [[ -f "$target" && ! -L "$target" ]]; then
+        local backup
+        backup="${target}.bak.$(date +%Y%m%d%H%M%S)"
+        log_info "Backing up existing WezTerm config to $backup"
+        mv "$target" "$backup"
+    fi
+
+    ln -sf "$source" "$target"
+    log_info "Created symlink: ~/.config/wezterm/wezterm.lua -> $source"
+}
+
+# ------------------------------------------------------------
+# WezTerm-only installation profile (--wezterm)
+#
+# Exclusive: it installs WezTerm and its config and nothing else.
+# ------------------------------------------------------------
+run_wezterm_only() {
+    log_info "========== WezTerm-only installation =========="
+
+    if [[ "$(uname)" == "Linux" ]] && grep -qiE "microsoft|wsl" /proc/version 2>/dev/null; then
+        log_warn "WSL detected: the GUI runs on the Windows side"
+        log_warn "Install it there with: winget install wez.wezterm"
+        log_warn "Config path used by WezTerm on Windows: %USERPROFILE%\\.config\\wezterm\\wezterm.lua"
+    else
+        install_wezterm || log_warn "WezTerm is not installed; the config is still deployed"
+        install_wezterm_fonts || log_warn "Some fonts failed to install (non-critical)"
+    fi
+
+    setup_wezterm_config
+
+    log_info "========== Done =========="
+    log_info "Start WezTerm with: wezterm"
+    log_info "Reload config inside WezTerm with: Ctrl+Shift+R"
+    log_info "Installation complete. Log file: $LOG_FILE"
+}
+
+# ------------------------------------------------------------
 # fd alias for Debian-based systems
 # ------------------------------------------------------------
 link_fd_alias() {
@@ -980,6 +1271,10 @@ main() {
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
+            --wezterm)
+                MODE="wezterm"
+                shift
+                ;;
             --terminal-cmd)
                 TERMINAL_CMD="$2"
                 shift 2
@@ -991,6 +1286,13 @@ main() {
         esac
     done
 
+    # --wezterm is an exclusive profile: it must not be combined with the
+    # options of the full install.
+    if [[ "$MODE" == "wezterm" && -n "$TERMINAL_CMD" ]]; then
+        log_error "--wezterm is exclusive and cannot be combined with --terminal-cmd"
+        exit 1
+    fi
+
     print_prerequisites
     check_system
 
@@ -1001,6 +1303,11 @@ main() {
         ensure_cmd sudo || { log_error "sudo is required on Linux"; exit 1; }
     else
         ensure_cmd brew || { log_error "Homebrew is required on macOS"; exit 1; }
+    fi
+
+    if [[ "$MODE" == "wezterm" ]]; then
+        run_wezterm_only
+        return 0
     fi
 
     log_info "========== Starting Installation =========="
